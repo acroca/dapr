@@ -15,6 +15,7 @@ package orchestrator
 
 import (
 	"context"
+	"fmt"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 
@@ -28,8 +29,25 @@ import (
 func (o *orchestrator) loadInternalState(ctx context.Context) (*wfenginestate.State, *backend.OrchestrationMetadata, error) {
 	// See if the state for this actor is already cached in memory
 	if o.state != nil {
+		fmt.Printf("🔹: > Loading internal state from cache\n")
+		// Load the state anyway, just to compare it with the cached state and find differences in the history
+		storedState, err := wfenginestate.LoadWorkflowState(ctx, o.actorState, o.actorID, wfenginestate.Options{
+			AppID:             o.appID,
+			WorkflowActorType: o.actorType,
+			ActivityActorType: o.activityActorType,
+		})
+		if err != nil {
+			return nil, nil, err
+		}
+		for i, his := range storedState.History {
+			if his.String() != o.state.History[i].String() {
+				fmt.Printf("🔹: > History event is different: a: %+v, b: %+v\n", his, o.state.History[i])
+			}
+		}
+
 		return o.state, o.ometa, nil
 	}
+	fmt.Printf("🔹: > Loading internal state from state store\n")
 
 	// state is not cached, so try to load it from the state store
 	log.Debugf("Workflow actor '%s': loading workflow state", o.actorID)
@@ -55,6 +73,7 @@ func (o *orchestrator) loadInternalState(ctx context.Context) (*wfenginestate.St
 }
 
 func (o *orchestrator) saveInternalState(ctx context.Context, state *wfenginestate.State) error {
+	fmt.Printf("🔹: > Saving internal state\n")
 	// generate and run a state store operation that saves all changes
 	req, err := state.GetSaveRequest(o.actorID)
 	if err != nil {

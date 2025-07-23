@@ -363,7 +363,6 @@ func LoadWorkflowState(ctx context.Context, state state.Interface, actorID strin
 			wState.CustomStatus.Value = customStatusValue
 		}
 	}
-
 	wfLogger.Infof("%s: loaded %d state records in %v", actorID, 1+len(bulkRes), time.Since(loadStartTime))
 	return wState, nil
 }

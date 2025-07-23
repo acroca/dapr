@@ -14,6 +14,8 @@ limitations under the License.
 package fork
 
 import (
+	"fmt"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -68,6 +70,7 @@ func New(opts Options) *Fork {
 func (f *Fork) Build() (*state.State, error) {
 	var found bool
 	for i, his := range f.oldState.History {
+		fmt.Printf("🔹: > Handling history event: %+v\n", his)
 		if his.GetEventId() != f.targetEventID {
 			f.handleBefore(his)
 			continue
@@ -93,11 +96,13 @@ func (f *Fork) Build() (*state.State, error) {
 
 	// Ensure incomplete activities are also rerun.
 	for _, unfin := range f.unfinishedActivities {
+		fmt.Printf("🔹: Adding unfinished activity history event: %+v\n", unfin)
 		f.newState.AddToInbox(unfin)
 	}
 
 	// Ensure incomplete timers are also rerun.
 	for _, unfin := range f.activeTimers {
+		fmt.Printf("🔹: Adding active timer history event: %+v\n", unfin)
 		f.newState.AddToInbox(unfin)
 	}
 
@@ -109,22 +114,27 @@ func (f *Fork) handleBefore(his *backend.HistoryEvent) {
 	// rerun.
 	switch his.GetEventType().(type) {
 	case *protos.HistoryEvent_TaskScheduled:
+		fmt.Printf("🔹: Adding unfinished activity history event: %+v\n", his)
 		f.unfinishedActivities[his.GetEventId()] = his
 
 	case *protos.HistoryEvent_TaskCompleted:
+		fmt.Printf("🔹: Adding completed activity history event: %+v\n", his)
 		f.newState.AddToHistory(f.unfinishedActivities[his.GetTaskCompleted().GetTaskScheduledId()])
 		f.newState.AddToHistory(his)
 		delete(f.unfinishedActivities, his.GetTaskCompleted().GetTaskScheduledId())
 
 	case *protos.HistoryEvent_TimerCreated:
+		fmt.Printf("🔹: Adding active timer history event: %+v\n", his)
 		f.activeTimers[his.GetEventId()] = his
 
 	case *protos.HistoryEvent_TimerFired:
+		fmt.Printf("🔹: Adding completed timer history event: %+v\n", his)
 		f.newState.AddToHistory(f.activeTimers[his.GetTimerFired().GetTimerId()])
 		f.newState.AddToHistory(his)
 		delete(f.activeTimers, his.GetTimerFired().GetTimerId())
 
 	default:
+		fmt.Printf("🔹: Adding default history event: %+v\n", his)
 		f.newState.AddToHistory(his)
 	}
 }

@@ -40,6 +40,7 @@ func (o *orchestrator) forkWorkflowHistory(ctx context.Context, request []byte) 
 		return fmt.Errorf("failed to unmarshal rerun workflow request: %w", err)
 	}
 
+	fmt.Printf("🔹: > Forking workflow history\n")
 	state, ometa, err := o.loadInternalState(ctx)
 	if err != nil {
 		return err
@@ -90,6 +91,7 @@ func (o *orchestrator) forkWorkflowHistory(ctx context.Context, request []byte) 
 }
 
 func (o *orchestrator) rerunWorkflowInstanceRequest(ctx context.Context, request []byte) error {
+	fmt.Printf("🔹: > Rerunning workflow instance\n")
 	state, ometa, err := o.loadInternalState(ctx)
 	if err != nil {
 		return err

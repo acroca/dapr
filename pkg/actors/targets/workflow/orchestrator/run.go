@@ -32,6 +32,9 @@ import (
 )
 
 func (o *orchestrator) runWorkflow(ctx context.Context, reminder *actorapi.Reminder) (todo.RunCompleted, error) {
+
+	fmt.Printf("🔹: > Running workflow\n")
+	defer fmt.Printf("🔹: > Done running workflow\n")
 	state, _, err := o.loadInternalState(ctx)
 	if err != nil {
 		return todo.RunCompletedTrue, fmt.Errorf("error loading internal state: %w", err)
@@ -41,6 +44,18 @@ func (o *orchestrator) runWorkflow(ctx context.Context, reminder *actorapi.Remin
 		log.Warnf("No workflow state found for actor '%s', terminating execution", o.actorID)
 		return todo.RunCompletedTrue, nil
 	}
+
+	saved := false
+	initialState := state.String()
+	defer func() {
+		if !saved {
+			reloadedState, _, _ := o.loadInternalState(ctx)
+			if reloadedState == nil && initialState != state.String() {
+				fmt.Printf("🔹: > State was modified but not saved!!!\n Initial state: %s\n Final state: %s\n", initialState, state.String())
+				panic("State was modified but not saved")
+			}
+		}
+	}()
 
 	if strings.HasPrefix(reminder.Name, "timer-") {
 		var durableTimer backend.DurableTimer
@@ -183,6 +198,7 @@ func (o *orchestrator) runWorkflow(ctx context.Context, reminder *actorapi.Remin
 	state.ApplyRuntimeStateChanges(rs)
 	state.ClearInbox()
 
+	saved = true
 	err = o.saveInternalState(ctx, state)
 	if err != nil {
 		return todo.RunCompletedFalse, err
