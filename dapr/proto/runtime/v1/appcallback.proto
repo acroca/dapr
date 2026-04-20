@@ -70,6 +70,138 @@ service AppCallbackAlpha {
   rpc OnJobEventAlpha1 (JobEventRequest) returns (JobEventResponse);
 }
 
+// AppCallbackActors V1 is an optional extension to AppCallback V1 that apps
+// implement to receive Dapr actor callbacks (registration, activation,
+// invocation, reminders, timers, deactivation) over gRPC.
+service AppCallbackActors {
+  // GetRegisteredActors returns the actor types the app hosts together with
+  // per-type runtime configuration.
+  rpc GetRegisteredActors(google.protobuf.Empty) returns (RegisteredActorsResponse) {}
+
+  // OnActorActivate is invoked when Dapr activates a new actor instance on
+  // this host.
+  rpc OnActorActivate(ActivateActorRequest) returns (google.protobuf.Empty) {}
+
+  // OnActorDeactivate is invoked when Dapr deactivates an actor instance.
+  rpc OnActorDeactivate(DeactivateActorRequest) returns (google.protobuf.Empty) {}
+
+  // OnActorInvoke invokes a method on an actor hosted by this app.
+  rpc OnActorInvoke(OnActorInvokeRequest) returns (OnActorInvokeResponse) {}
+
+  // OnActorReminder fires a reminder on an actor hosted by this app.
+  rpc OnActorReminder(OnActorReminderRequest) returns (OnActorReminderResponse) {}
+
+  // OnActorTimer fires a timer on an actor hosted by this app.
+  rpc OnActorTimer(OnActorTimerRequest) returns (OnActorReminderResponse) {}
+}
+
+// RegisteredActorsResponse describes the actor types hosted by the app and
+// the runtime configuration that applies to them.
+message RegisteredActorsResponse {
+  // entities is the list of actor types this app hosts.
+  repeated string entities = 1;
+
+  // actor_idle_timeout is the default idle timeout for all actor types as a
+  // duration string (e.g. "1h"). Empty means use Dapr's default.
+  string actor_idle_timeout = 2 [json_name = "actorIdleTimeout"];
+
+  // drain_ongoing_call_timeout is the duration Dapr waits for ongoing
+  // invocations to finish when an actor is rebalanced (e.g. "30s"). Empty
+  // means use Dapr's default.
+  string drain_ongoing_call_timeout = 3 [json_name = "drainOngoingCallTimeout"];
+
+  // drain_rebalanced_actors, when true, instructs Dapr to drain invocations
+  // from a rebalanced actor rather than aborting them.
+  optional bool drain_rebalanced_actors = 4 [json_name = "drainRebalancedActors"];
+
+  // reentrancy is the default reentrancy configuration applied to all actor
+  // types.
+  ActorReentrancyConfig reentrancy = 5;
+
+  // entities_config applies per-actor-type overrides on top of the defaults
+  // above.
+  repeated ActorEntityConfig entities_config = 6 [json_name = "entitiesConfig"];
+}
+
+// ActorEntityConfig overrides the default actor runtime configuration for a
+// specific set of entities.
+message ActorEntityConfig {
+  repeated string entities = 1;
+  string actor_idle_timeout = 2 [json_name = "actorIdleTimeout"];
+  string drain_ongoing_call_timeout = 3 [json_name = "drainOngoingCallTimeout"];
+  optional bool drain_rebalanced_actors = 4 [json_name = "drainRebalancedActors"];
+  ActorReentrancyConfig reentrancy = 5;
+}
+
+// ActorReentrancyConfig configures actor reentrancy behavior.
+message ActorReentrancyConfig {
+  bool enabled = 1;
+  optional int32 max_stack_depth = 2 [json_name = "maxStackDepth"];
+}
+
+// ActivateActorRequest is the request payload for OnActorActivate.
+message ActivateActorRequest {
+  string actor_type = 1 [json_name = "actorType"];
+  string actor_id = 2 [json_name = "actorId"];
+}
+
+// DeactivateActorRequest is the request payload for OnActorDeactivate.
+message DeactivateActorRequest {
+  string actor_type = 1 [json_name = "actorType"];
+  string actor_id = 2 [json_name = "actorId"];
+}
+
+// OnActorInvokeRequest is the request payload for OnActorInvoke.
+message OnActorInvokeRequest {
+  string actor_type = 1 [json_name = "actorType"];
+  string actor_id = 2 [json_name = "actorId"];
+  string method = 3;
+  bytes data = 4;
+  // metadata carries request-level headers from the original caller,
+  // including "content-type".
+  map<string, string> metadata = 5;
+}
+
+// OnActorInvokeResponse is the response payload for OnActorInvoke.
+message OnActorInvokeResponse {
+  bytes data = 1;
+  // metadata carries response-level headers, including "content-type".
+  map<string, string> metadata = 2;
+  // error, when true, signals that data is an application-defined error
+  // payload returned from the actor method. Dapr passes the payload through
+  // to the original caller verbatim.
+  bool error = 3;
+}
+
+// OnActorReminderRequest is the request payload for OnActorReminder.
+message OnActorReminderRequest {
+  string actor_type = 1 [json_name = "actorType"];
+  string actor_id = 2 [json_name = "actorId"];
+  string name = 3;
+  string due_time = 4 [json_name = "dueTime"];
+  string period = 5;
+  google.protobuf.Any data = 6;
+}
+
+// OnActorTimerRequest is the request payload for OnActorTimer.
+message OnActorTimerRequest {
+  string actor_type = 1 [json_name = "actorType"];
+  string actor_id = 2 [json_name = "actorId"];
+  string name = 3;
+  string due_time = 4 [json_name = "dueTime"];
+  string period = 5;
+  string callback = 6;
+  google.protobuf.Any data = 7;
+}
+
+// OnActorReminderResponse is returned from both OnActorReminder and
+// OnActorTimer.
+message OnActorReminderResponse {
+  // cancel, when true, signals to Dapr that the reminder or timer should
+  // not fire again and should be unregistered.
+  bool cancel = 1;
+}
+
 message JobEventRequest {
   // Job name.
   string name = 1;

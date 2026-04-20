@@ -41,6 +41,8 @@ const (
 	AppCallbackHealthCheckName = "dapr.proto.runtime.v1.AppCallbackHealthCheck"
 	// AppCallbackAlphaName is the fully-qualified name of the AppCallbackAlpha service.
 	AppCallbackAlphaName = "dapr.proto.runtime.v1.AppCallbackAlpha"
+	// AppCallbackActorsName is the fully-qualified name of the AppCallbackActors service.
+	AppCallbackActorsName = "dapr.proto.runtime.v1.AppCallbackActors"
 )
 
 // These constants are the fully-qualified names of the RPCs defined in this package. They're
@@ -77,6 +79,24 @@ const (
 	// AppCallbackAlphaOnJobEventAlpha1Procedure is the fully-qualified name of the AppCallbackAlpha's
 	// OnJobEventAlpha1 RPC.
 	AppCallbackAlphaOnJobEventAlpha1Procedure = "/dapr.proto.runtime.v1.AppCallbackAlpha/OnJobEventAlpha1"
+	// AppCallbackActorsGetRegisteredActorsProcedure is the fully-qualified name of the
+	// AppCallbackActors's GetRegisteredActors RPC.
+	AppCallbackActorsGetRegisteredActorsProcedure = "/dapr.proto.runtime.v1.AppCallbackActors/GetRegisteredActors"
+	// AppCallbackActorsOnActorActivateProcedure is the fully-qualified name of the AppCallbackActors's
+	// OnActorActivate RPC.
+	AppCallbackActorsOnActorActivateProcedure = "/dapr.proto.runtime.v1.AppCallbackActors/OnActorActivate"
+	// AppCallbackActorsOnActorDeactivateProcedure is the fully-qualified name of the
+	// AppCallbackActors's OnActorDeactivate RPC.
+	AppCallbackActorsOnActorDeactivateProcedure = "/dapr.proto.runtime.v1.AppCallbackActors/OnActorDeactivate"
+	// AppCallbackActorsOnActorInvokeProcedure is the fully-qualified name of the AppCallbackActors's
+	// OnActorInvoke RPC.
+	AppCallbackActorsOnActorInvokeProcedure = "/dapr.proto.runtime.v1.AppCallbackActors/OnActorInvoke"
+	// AppCallbackActorsOnActorReminderProcedure is the fully-qualified name of the AppCallbackActors's
+	// OnActorReminder RPC.
+	AppCallbackActorsOnActorReminderProcedure = "/dapr.proto.runtime.v1.AppCallbackActors/OnActorReminder"
+	// AppCallbackActorsOnActorTimerProcedure is the fully-qualified name of the AppCallbackActors's
+	// OnActorTimer RPC.
+	AppCallbackActorsOnActorTimerProcedure = "/dapr.proto.runtime.v1.AppCallbackActors/OnActorTimer"
 )
 
 // AppCallbackClient is a client for the dapr.proto.runtime.v1.AppCallback service.
@@ -477,4 +497,221 @@ func (UnimplementedAppCallbackAlphaHandler) OnBulkTopicEventAlpha1(context.Conte
 
 func (UnimplementedAppCallbackAlphaHandler) OnJobEventAlpha1(context.Context, *connect.Request[v11.JobEventRequest]) (*connect.Response[v11.JobEventResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("dapr.proto.runtime.v1.AppCallbackAlpha.OnJobEventAlpha1 is not implemented"))
+}
+
+// AppCallbackActorsClient is a client for the dapr.proto.runtime.v1.AppCallbackActors service.
+type AppCallbackActorsClient interface {
+	// GetRegisteredActors returns the actor types the app hosts together with
+	// per-type runtime configuration.
+	GetRegisteredActors(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v11.RegisteredActorsResponse], error)
+	// OnActorActivate is invoked when Dapr activates a new actor instance on
+	// this host.
+	OnActorActivate(context.Context, *connect.Request[v11.ActivateActorRequest]) (*connect.Response[emptypb.Empty], error)
+	// OnActorDeactivate is invoked when Dapr deactivates an actor instance.
+	OnActorDeactivate(context.Context, *connect.Request[v11.DeactivateActorRequest]) (*connect.Response[emptypb.Empty], error)
+	// OnActorInvoke invokes a method on an actor hosted by this app.
+	OnActorInvoke(context.Context, *connect.Request[v11.OnActorInvokeRequest]) (*connect.Response[v11.OnActorInvokeResponse], error)
+	// OnActorReminder fires a reminder on an actor hosted by this app.
+	OnActorReminder(context.Context, *connect.Request[v11.OnActorReminderRequest]) (*connect.Response[v11.OnActorReminderResponse], error)
+	// OnActorTimer fires a timer on an actor hosted by this app.
+	OnActorTimer(context.Context, *connect.Request[v11.OnActorTimerRequest]) (*connect.Response[v11.OnActorReminderResponse], error)
+}
+
+// NewAppCallbackActorsClient constructs a client for the dapr.proto.runtime.v1.AppCallbackActors
+// service. By default, it uses the Connect protocol with the binary Protobuf Codec, asks for
+// gzipped responses, and sends uncompressed requests. To use the gRPC or gRPC-Web protocols, supply
+// the connect.WithGRPC() or connect.WithGRPCWeb() options.
+//
+// The URL supplied here should be the base URL for the Connect or gRPC server (for example,
+// http://api.acme.com or https://acme.com/grpc).
+func NewAppCallbackActorsClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) AppCallbackActorsClient {
+	baseURL = strings.TrimRight(baseURL, "/")
+	appCallbackActorsMethods := v11.File_dapr_proto_runtime_v1_appcallback_proto.Services().ByName("AppCallbackActors").Methods()
+	return &appCallbackActorsClient{
+		getRegisteredActors: connect.NewClient[emptypb.Empty, v11.RegisteredActorsResponse](
+			httpClient,
+			baseURL+AppCallbackActorsGetRegisteredActorsProcedure,
+			connect.WithSchema(appCallbackActorsMethods.ByName("GetRegisteredActors")),
+			connect.WithClientOptions(opts...),
+		),
+		onActorActivate: connect.NewClient[v11.ActivateActorRequest, emptypb.Empty](
+			httpClient,
+			baseURL+AppCallbackActorsOnActorActivateProcedure,
+			connect.WithSchema(appCallbackActorsMethods.ByName("OnActorActivate")),
+			connect.WithClientOptions(opts...),
+		),
+		onActorDeactivate: connect.NewClient[v11.DeactivateActorRequest, emptypb.Empty](
+			httpClient,
+			baseURL+AppCallbackActorsOnActorDeactivateProcedure,
+			connect.WithSchema(appCallbackActorsMethods.ByName("OnActorDeactivate")),
+			connect.WithClientOptions(opts...),
+		),
+		onActorInvoke: connect.NewClient[v11.OnActorInvokeRequest, v11.OnActorInvokeResponse](
+			httpClient,
+			baseURL+AppCallbackActorsOnActorInvokeProcedure,
+			connect.WithSchema(appCallbackActorsMethods.ByName("OnActorInvoke")),
+			connect.WithClientOptions(opts...),
+		),
+		onActorReminder: connect.NewClient[v11.OnActorReminderRequest, v11.OnActorReminderResponse](
+			httpClient,
+			baseURL+AppCallbackActorsOnActorReminderProcedure,
+			connect.WithSchema(appCallbackActorsMethods.ByName("OnActorReminder")),
+			connect.WithClientOptions(opts...),
+		),
+		onActorTimer: connect.NewClient[v11.OnActorTimerRequest, v11.OnActorReminderResponse](
+			httpClient,
+			baseURL+AppCallbackActorsOnActorTimerProcedure,
+			connect.WithSchema(appCallbackActorsMethods.ByName("OnActorTimer")),
+			connect.WithClientOptions(opts...),
+		),
+	}
+}
+
+// appCallbackActorsClient implements AppCallbackActorsClient.
+type appCallbackActorsClient struct {
+	getRegisteredActors *connect.Client[emptypb.Empty, v11.RegisteredActorsResponse]
+	onActorActivate     *connect.Client[v11.ActivateActorRequest, emptypb.Empty]
+	onActorDeactivate   *connect.Client[v11.DeactivateActorRequest, emptypb.Empty]
+	onActorInvoke       *connect.Client[v11.OnActorInvokeRequest, v11.OnActorInvokeResponse]
+	onActorReminder     *connect.Client[v11.OnActorReminderRequest, v11.OnActorReminderResponse]
+	onActorTimer        *connect.Client[v11.OnActorTimerRequest, v11.OnActorReminderResponse]
+}
+
+// GetRegisteredActors calls dapr.proto.runtime.v1.AppCallbackActors.GetRegisteredActors.
+func (c *appCallbackActorsClient) GetRegisteredActors(ctx context.Context, req *connect.Request[emptypb.Empty]) (*connect.Response[v11.RegisteredActorsResponse], error) {
+	return c.getRegisteredActors.CallUnary(ctx, req)
+}
+
+// OnActorActivate calls dapr.proto.runtime.v1.AppCallbackActors.OnActorActivate.
+func (c *appCallbackActorsClient) OnActorActivate(ctx context.Context, req *connect.Request[v11.ActivateActorRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.onActorActivate.CallUnary(ctx, req)
+}
+
+// OnActorDeactivate calls dapr.proto.runtime.v1.AppCallbackActors.OnActorDeactivate.
+func (c *appCallbackActorsClient) OnActorDeactivate(ctx context.Context, req *connect.Request[v11.DeactivateActorRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.onActorDeactivate.CallUnary(ctx, req)
+}
+
+// OnActorInvoke calls dapr.proto.runtime.v1.AppCallbackActors.OnActorInvoke.
+func (c *appCallbackActorsClient) OnActorInvoke(ctx context.Context, req *connect.Request[v11.OnActorInvokeRequest]) (*connect.Response[v11.OnActorInvokeResponse], error) {
+	return c.onActorInvoke.CallUnary(ctx, req)
+}
+
+// OnActorReminder calls dapr.proto.runtime.v1.AppCallbackActors.OnActorReminder.
+func (c *appCallbackActorsClient) OnActorReminder(ctx context.Context, req *connect.Request[v11.OnActorReminderRequest]) (*connect.Response[v11.OnActorReminderResponse], error) {
+	return c.onActorReminder.CallUnary(ctx, req)
+}
+
+// OnActorTimer calls dapr.proto.runtime.v1.AppCallbackActors.OnActorTimer.
+func (c *appCallbackActorsClient) OnActorTimer(ctx context.Context, req *connect.Request[v11.OnActorTimerRequest]) (*connect.Response[v11.OnActorReminderResponse], error) {
+	return c.onActorTimer.CallUnary(ctx, req)
+}
+
+// AppCallbackActorsHandler is an implementation of the dapr.proto.runtime.v1.AppCallbackActors
+// service.
+type AppCallbackActorsHandler interface {
+	// GetRegisteredActors returns the actor types the app hosts together with
+	// per-type runtime configuration.
+	GetRegisteredActors(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v11.RegisteredActorsResponse], error)
+	// OnActorActivate is invoked when Dapr activates a new actor instance on
+	// this host.
+	OnActorActivate(context.Context, *connect.Request[v11.ActivateActorRequest]) (*connect.Response[emptypb.Empty], error)
+	// OnActorDeactivate is invoked when Dapr deactivates an actor instance.
+	OnActorDeactivate(context.Context, *connect.Request[v11.DeactivateActorRequest]) (*connect.Response[emptypb.Empty], error)
+	// OnActorInvoke invokes a method on an actor hosted by this app.
+	OnActorInvoke(context.Context, *connect.Request[v11.OnActorInvokeRequest]) (*connect.Response[v11.OnActorInvokeResponse], error)
+	// OnActorReminder fires a reminder on an actor hosted by this app.
+	OnActorReminder(context.Context, *connect.Request[v11.OnActorReminderRequest]) (*connect.Response[v11.OnActorReminderResponse], error)
+	// OnActorTimer fires a timer on an actor hosted by this app.
+	OnActorTimer(context.Context, *connect.Request[v11.OnActorTimerRequest]) (*connect.Response[v11.OnActorReminderResponse], error)
+}
+
+// NewAppCallbackActorsHandler builds an HTTP handler from the service implementation. It returns
+// the path on which to mount the handler and the handler itself.
+//
+// By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
+// and JSON codecs. They also support gzip compression.
+func NewAppCallbackActorsHandler(svc AppCallbackActorsHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	appCallbackActorsMethods := v11.File_dapr_proto_runtime_v1_appcallback_proto.Services().ByName("AppCallbackActors").Methods()
+	appCallbackActorsGetRegisteredActorsHandler := connect.NewUnaryHandler(
+		AppCallbackActorsGetRegisteredActorsProcedure,
+		svc.GetRegisteredActors,
+		connect.WithSchema(appCallbackActorsMethods.ByName("GetRegisteredActors")),
+		connect.WithHandlerOptions(opts...),
+	)
+	appCallbackActorsOnActorActivateHandler := connect.NewUnaryHandler(
+		AppCallbackActorsOnActorActivateProcedure,
+		svc.OnActorActivate,
+		connect.WithSchema(appCallbackActorsMethods.ByName("OnActorActivate")),
+		connect.WithHandlerOptions(opts...),
+	)
+	appCallbackActorsOnActorDeactivateHandler := connect.NewUnaryHandler(
+		AppCallbackActorsOnActorDeactivateProcedure,
+		svc.OnActorDeactivate,
+		connect.WithSchema(appCallbackActorsMethods.ByName("OnActorDeactivate")),
+		connect.WithHandlerOptions(opts...),
+	)
+	appCallbackActorsOnActorInvokeHandler := connect.NewUnaryHandler(
+		AppCallbackActorsOnActorInvokeProcedure,
+		svc.OnActorInvoke,
+		connect.WithSchema(appCallbackActorsMethods.ByName("OnActorInvoke")),
+		connect.WithHandlerOptions(opts...),
+	)
+	appCallbackActorsOnActorReminderHandler := connect.NewUnaryHandler(
+		AppCallbackActorsOnActorReminderProcedure,
+		svc.OnActorReminder,
+		connect.WithSchema(appCallbackActorsMethods.ByName("OnActorReminder")),
+		connect.WithHandlerOptions(opts...),
+	)
+	appCallbackActorsOnActorTimerHandler := connect.NewUnaryHandler(
+		AppCallbackActorsOnActorTimerProcedure,
+		svc.OnActorTimer,
+		connect.WithSchema(appCallbackActorsMethods.ByName("OnActorTimer")),
+		connect.WithHandlerOptions(opts...),
+	)
+	return "/dapr.proto.runtime.v1.AppCallbackActors/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case AppCallbackActorsGetRegisteredActorsProcedure:
+			appCallbackActorsGetRegisteredActorsHandler.ServeHTTP(w, r)
+		case AppCallbackActorsOnActorActivateProcedure:
+			appCallbackActorsOnActorActivateHandler.ServeHTTP(w, r)
+		case AppCallbackActorsOnActorDeactivateProcedure:
+			appCallbackActorsOnActorDeactivateHandler.ServeHTTP(w, r)
+		case AppCallbackActorsOnActorInvokeProcedure:
+			appCallbackActorsOnActorInvokeHandler.ServeHTTP(w, r)
+		case AppCallbackActorsOnActorReminderProcedure:
+			appCallbackActorsOnActorReminderHandler.ServeHTTP(w, r)
+		case AppCallbackActorsOnActorTimerProcedure:
+			appCallbackActorsOnActorTimerHandler.ServeHTTP(w, r)
+		default:
+			http.NotFound(w, r)
+		}
+	})
+}
+
+// UnimplementedAppCallbackActorsHandler returns CodeUnimplemented from all methods.
+type UnimplementedAppCallbackActorsHandler struct{}
+
+func (UnimplementedAppCallbackActorsHandler) GetRegisteredActors(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v11.RegisteredActorsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("dapr.proto.runtime.v1.AppCallbackActors.GetRegisteredActors is not implemented"))
+}
+
+func (UnimplementedAppCallbackActorsHandler) OnActorActivate(context.Context, *connect.Request[v11.ActivateActorRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("dapr.proto.runtime.v1.AppCallbackActors.OnActorActivate is not implemented"))
+}
+
+func (UnimplementedAppCallbackActorsHandler) OnActorDeactivate(context.Context, *connect.Request[v11.DeactivateActorRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("dapr.proto.runtime.v1.AppCallbackActors.OnActorDeactivate is not implemented"))
+}
+
+func (UnimplementedAppCallbackActorsHandler) OnActorInvoke(context.Context, *connect.Request[v11.OnActorInvokeRequest]) (*connect.Response[v11.OnActorInvokeResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("dapr.proto.runtime.v1.AppCallbackActors.OnActorInvoke is not implemented"))
+}
+
+func (UnimplementedAppCallbackActorsHandler) OnActorReminder(context.Context, *connect.Request[v11.OnActorReminderRequest]) (*connect.Response[v11.OnActorReminderResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("dapr.proto.runtime.v1.AppCallbackActors.OnActorReminder is not implemented"))
+}
+
+func (UnimplementedAppCallbackActorsHandler) OnActorTimer(context.Context, *connect.Request[v11.OnActorTimerRequest]) (*connect.Response[v11.OnActorReminderResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("dapr.proto.runtime.v1.AppCallbackActors.OnActorTimer is not implemented"))
 }

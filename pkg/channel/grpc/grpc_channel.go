@@ -39,28 +39,30 @@ import (
 
 // Channel is a concrete AppChannel implementation for interacting with gRPC based user code.
 type Channel struct {
-	appCallbackClient      runtimev1pb.AppCallbackClient
-	appCallbackAlphaClient runtimev1pb.AppCallbackAlphaClient
-	conn                   *grpc.ClientConn
-	baseAddress            string
-	ch                     chan struct{}
-	tracingSpec            config.TracingSpec
-	appMetadataToken       string
-	maxRequestBodySize     int
-	appHealth              *apphealth.AppHealth
+	appCallbackClient       runtimev1pb.AppCallbackClient
+	appCallbackAlphaClient  runtimev1pb.AppCallbackAlphaClient
+	appCallbackActorsClient runtimev1pb.AppCallbackActorsClient
+	conn                    *grpc.ClientConn
+	baseAddress             string
+	ch                      chan struct{}
+	tracingSpec             config.TracingSpec
+	appMetadataToken        string
+	maxRequestBodySize      int
+	appHealth               *apphealth.AppHealth
 }
 
 // CreateLocalChannel creates a gRPC connection with user code.
 func CreateLocalChannel(port, maxConcurrency int, conn *grpc.ClientConn, spec config.TracingSpec, maxRequestBodySize int, readBufferSize int, baseAddress string, appAPIToken string) *Channel {
 	// readBufferSize is unused
 	c := &Channel{
-		appCallbackClient:      runtimev1pb.NewAppCallbackClient(conn),
-		appCallbackAlphaClient: runtimev1pb.NewAppCallbackAlphaClient(conn),
-		conn:                   conn,
-		baseAddress:            net.JoinHostPort(baseAddress, strconv.Itoa(port)),
-		tracingSpec:            spec,
-		appMetadataToken:       appAPIToken,
-		maxRequestBodySize:     maxRequestBodySize,
+		appCallbackClient:       runtimev1pb.NewAppCallbackClient(conn),
+		appCallbackAlphaClient:  runtimev1pb.NewAppCallbackAlphaClient(conn),
+		appCallbackActorsClient: runtimev1pb.NewAppCallbackActorsClient(conn),
+		conn:                    conn,
+		baseAddress:             net.JoinHostPort(baseAddress, strconv.Itoa(port)),
+		tracingSpec:             spec,
+		appMetadataToken:        appAPIToken,
+		maxRequestBodySize:      maxRequestBodySize,
 	}
 	if maxConcurrency > 0 {
 		c.ch = make(chan struct{}, maxConcurrency)
@@ -69,8 +71,68 @@ func CreateLocalChannel(port, maxConcurrency int, conn *grpc.ClientConn, spec co
 }
 
 // GetAppConfig gets application config from user application.
-func (g *Channel) GetAppConfig(_ context.Context, appID string) (*config.ApplicationConfig, error) {
-	return nil, nil
+//
+// The app advertises its registered actor types and runtime config by
+// implementing the AppCallbackActors service. Apps that do not implement it
+// (codes.Unimplemented) return an empty config — they simply host no actors.
+func (g *Channel) GetAppConfig(ctx context.Context, appID string) (*config.ApplicationConfig, error) {
+	ctx = g.AddAppTokenToContext(ctx)
+	resp, err := g.appCallbackActorsClient.GetRegisteredActors(ctx, &emptypb.Empty{})
+	if err != nil {
+		if status.Code(err) == codes.Unimplemented {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("failed to get registered actors from app: %w", err)
+	}
+	return registeredActorsToAppConfig(resp), nil
+}
+
+// registeredActorsToAppConfig translates the wire-level actor registration
+// response into the internal ApplicationConfig shape used by the rest of the
+// runtime.
+func registeredActorsToAppConfig(resp *runtimev1pb.RegisteredActorsResponse) *config.ApplicationConfig {
+	if resp == nil {
+		return nil
+	}
+	cfg := &config.ApplicationConfig{
+		Entities:                resp.GetEntities(),
+		ActorIdleTimeout:        resp.GetActorIdleTimeout(),
+		DrainOngoingCallTimeout: resp.GetDrainOngoingCallTimeout(),
+		Reentrancy:              reentrancyConfigFromProto(resp.GetReentrancy()),
+	}
+	if resp.DrainRebalancedActors != nil {
+		v := resp.GetDrainRebalancedActors()
+		cfg.DrainRebalancedActors = &v
+	}
+	if entityCfgs := resp.GetEntitiesConfig(); len(entityCfgs) > 0 {
+		cfg.EntityConfigs = make([]config.EntityConfig, 0, len(entityCfgs))
+		for _, ec := range entityCfgs {
+			converted := config.EntityConfig{
+				Entities:                ec.GetEntities(),
+				ActorIdleTimeout:        ec.GetActorIdleTimeout(),
+				DrainOngoingCallTimeout: ec.GetDrainOngoingCallTimeout(),
+				Reentrancy:              reentrancyConfigFromProto(ec.GetReentrancy()),
+			}
+			if ec.DrainRebalancedActors != nil {
+				v := ec.GetDrainRebalancedActors()
+				converted.DrainRebalancedActors = &v
+			}
+			cfg.EntityConfigs = append(cfg.EntityConfigs, converted)
+		}
+	}
+	return cfg
+}
+
+func reentrancyConfigFromProto(r *runtimev1pb.ActorReentrancyConfig) config.ReentrancyConfig {
+	if r == nil {
+		return config.ReentrancyConfig{}
+	}
+	out := config.ReentrancyConfig{Enabled: r.GetEnabled()}
+	if r.MaxStackDepth != nil {
+		v := int(r.GetMaxStackDepth())
+		out.MaxStackDepth = &v
+	}
+	return out
 }
 
 // InvokeMethod invokes user code via gRPC.

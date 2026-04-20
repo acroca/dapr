@@ -25,16 +25,18 @@ import (
 
 type server struct {
 	testpb.UnsafeTestServiceServer
+	rtv1.UnimplementedAppCallbackActorsServer
 
-	onInvokeFn         func(context.Context, *commonv1.InvokeRequest) (*commonv1.InvokeResponse, error)
-	onJobEventFn       func(context.Context, *rtv1.JobEventRequest) (*rtv1.JobEventResponse, error)
-	onTopicEventFn     func(context.Context, *rtv1.TopicEventRequest) (*rtv1.TopicEventResponse, error)
-	onBulkTopicEventFn func(context.Context, *rtv1.TopicEventBulkRequest) (*rtv1.TopicEventBulkResponse, error)
-	listTopicSubFn     func(context.Context, *emptypb.Empty) (*rtv1.ListTopicSubscriptionsResponse, error)
-	listInputBindFn    func(context.Context, *emptypb.Empty) (*rtv1.ListInputBindingsResponse, error)
-	onBindingEventFn   func(context.Context, *rtv1.BindingEventRequest) (*rtv1.BindingEventResponse, error)
-	healthCheckFn      func(context.Context, *emptypb.Empty) (*rtv1.HealthCheckResponse, error)
-	pingFn             func(context.Context, *testpb.PingRequest) (*testpb.PingResponse, error)
+	onInvokeFn            func(context.Context, *commonv1.InvokeRequest) (*commonv1.InvokeResponse, error)
+	onJobEventFn          func(context.Context, *rtv1.JobEventRequest) (*rtv1.JobEventResponse, error)
+	onTopicEventFn        func(context.Context, *rtv1.TopicEventRequest) (*rtv1.TopicEventResponse, error)
+	onBulkTopicEventFn    func(context.Context, *rtv1.TopicEventBulkRequest) (*rtv1.TopicEventBulkResponse, error)
+	listTopicSubFn        func(context.Context, *emptypb.Empty) (*rtv1.ListTopicSubscriptionsResponse, error)
+	listInputBindFn       func(context.Context, *emptypb.Empty) (*rtv1.ListInputBindingsResponse, error)
+	onBindingEventFn      func(context.Context, *rtv1.BindingEventRequest) (*rtv1.BindingEventResponse, error)
+	healthCheckFn         func(context.Context, *emptypb.Empty) (*rtv1.HealthCheckResponse, error)
+	pingFn                func(context.Context, *testpb.PingRequest) (*testpb.PingResponse, error)
+	getRegisteredActorsFn func(context.Context, *emptypb.Empty) (*rtv1.RegisteredActorsResponse, error)
 }
 
 func (s *server) OnInvoke(ctx context.Context, in *commonv1.InvokeRequest) (*commonv1.InvokeResponse, error) {
@@ -105,4 +107,14 @@ func (s *server) Ping(ctx context.Context, req *testpb.PingRequest) (*testpb.Pin
 		return s.pingFn(ctx, req)
 	}
 	return new(testpb.PingResponse), nil
+}
+
+// GetRegisteredActors delegates to the test-supplied handler. When no handler
+// is installed we defer to UnimplementedAppCallbackActorsServer so daprd sees
+// codes.Unimplemented — the explicit signal that the app hosts no actors.
+func (s *server) GetRegisteredActors(ctx context.Context, in *emptypb.Empty) (*rtv1.RegisteredActorsResponse, error) {
+	if s.getRegisteredActorsFn == nil {
+		return s.UnimplementedAppCallbackActorsServer.GetRegisteredActors(ctx, in)
+	}
+	return s.getRegisteredActorsFn(ctx, in)
 }

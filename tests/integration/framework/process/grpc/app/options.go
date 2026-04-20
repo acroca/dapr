@@ -29,17 +29,18 @@ import (
 // options contains the options for running a GRPC server app in integration
 // tests.
 type options struct {
-	grpcopts           []procgrpc.Option
-	withRegister       func(s *grpc.Server)
-	onTopicEventFn     func(context.Context, *rtv1.TopicEventRequest) (*rtv1.TopicEventResponse, error)
-	onBulkTopicEventFn func(context.Context, *rtv1.TopicEventBulkRequest) (*rtv1.TopicEventBulkResponse, error)
-	onInvokeFn         func(context.Context, *commonv1.InvokeRequest) (*commonv1.InvokeResponse, error)
-	onJobEventFn       func(context.Context, *rtv1.JobEventRequest) (*rtv1.JobEventResponse, error)
-	listTopicSubFn     func(ctx context.Context, in *emptypb.Empty) (*rtv1.ListTopicSubscriptionsResponse, error)
-	listInputBindFn    func(context.Context, *emptypb.Empty) (*rtv1.ListInputBindingsResponse, error)
-	onBindingEventFn   func(context.Context, *rtv1.BindingEventRequest) (*rtv1.BindingEventResponse, error)
-	healthCheckFn      func(context.Context, *emptypb.Empty) (*rtv1.HealthCheckResponse, error)
-	pingFn             func(context.Context, *testpb.PingRequest) (*testpb.PingResponse, error)
+	grpcopts              []procgrpc.Option
+	withRegister          func(s *grpc.Server)
+	onTopicEventFn        func(context.Context, *rtv1.TopicEventRequest) (*rtv1.TopicEventResponse, error)
+	onBulkTopicEventFn    func(context.Context, *rtv1.TopicEventBulkRequest) (*rtv1.TopicEventBulkResponse, error)
+	onInvokeFn            func(context.Context, *commonv1.InvokeRequest) (*commonv1.InvokeResponse, error)
+	onJobEventFn          func(context.Context, *rtv1.JobEventRequest) (*rtv1.JobEventResponse, error)
+	listTopicSubFn        func(ctx context.Context, in *emptypb.Empty) (*rtv1.ListTopicSubscriptionsResponse, error)
+	listInputBindFn       func(context.Context, *emptypb.Empty) (*rtv1.ListInputBindingsResponse, error)
+	onBindingEventFn      func(context.Context, *rtv1.BindingEventRequest) (*rtv1.BindingEventResponse, error)
+	healthCheckFn         func(context.Context, *emptypb.Empty) (*rtv1.HealthCheckResponse, error)
+	pingFn                func(context.Context, *testpb.PingRequest) (*testpb.PingResponse, error)
+	getRegisteredActorsFn func(context.Context, *emptypb.Empty) (*rtv1.RegisteredActorsResponse, error)
 }
 
 func WithGRPCOptions(opts ...procgrpc.Option) func(*options) {
@@ -105,5 +106,14 @@ func WithPingFn(fn func(context.Context, *testpb.PingRequest) (*testpb.PingRespo
 func WithRegister(fn func(s *grpc.Server)) func(*options) {
 	return func(opts *options) {
 		opts.withRegister = fn
+	}
+}
+
+// WithOnGetRegisteredActorsFn installs a handler for
+// AppCallbackActors.GetRegisteredActors. When unset, the app returns
+// codes.Unimplemented so daprd treats the app as hosting no actors.
+func WithOnGetRegisteredActorsFn(fn func(context.Context, *emptypb.Empty) (*rtv1.RegisteredActorsResponse, error)) func(*options) {
+	return func(opts *options) {
+		opts.getRegisteredActorsFn = fn
 	}
 }

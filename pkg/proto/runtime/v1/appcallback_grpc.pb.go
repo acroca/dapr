@@ -544,3 +544,292 @@ var AppCallbackAlpha_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "dapr/proto/runtime/v1/appcallback.proto",
 }
+
+const (
+	AppCallbackActors_GetRegisteredActors_FullMethodName = "/dapr.proto.runtime.v1.AppCallbackActors/GetRegisteredActors"
+	AppCallbackActors_OnActorActivate_FullMethodName     = "/dapr.proto.runtime.v1.AppCallbackActors/OnActorActivate"
+	AppCallbackActors_OnActorDeactivate_FullMethodName   = "/dapr.proto.runtime.v1.AppCallbackActors/OnActorDeactivate"
+	AppCallbackActors_OnActorInvoke_FullMethodName       = "/dapr.proto.runtime.v1.AppCallbackActors/OnActorInvoke"
+	AppCallbackActors_OnActorReminder_FullMethodName     = "/dapr.proto.runtime.v1.AppCallbackActors/OnActorReminder"
+	AppCallbackActors_OnActorTimer_FullMethodName        = "/dapr.proto.runtime.v1.AppCallbackActors/OnActorTimer"
+)
+
+// AppCallbackActorsClient is the client API for AppCallbackActors service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type AppCallbackActorsClient interface {
+	// GetRegisteredActors returns the actor types the app hosts together with
+	// per-type runtime configuration.
+	GetRegisteredActors(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*RegisteredActorsResponse, error)
+	// OnActorActivate is invoked when Dapr activates a new actor instance on
+	// this host.
+	OnActorActivate(ctx context.Context, in *ActivateActorRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// OnActorDeactivate is invoked when Dapr deactivates an actor instance.
+	OnActorDeactivate(ctx context.Context, in *DeactivateActorRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// OnActorInvoke invokes a method on an actor hosted by this app.
+	OnActorInvoke(ctx context.Context, in *OnActorInvokeRequest, opts ...grpc.CallOption) (*OnActorInvokeResponse, error)
+	// OnActorReminder fires a reminder on an actor hosted by this app.
+	OnActorReminder(ctx context.Context, in *OnActorReminderRequest, opts ...grpc.CallOption) (*OnActorReminderResponse, error)
+	// OnActorTimer fires a timer on an actor hosted by this app.
+	OnActorTimer(ctx context.Context, in *OnActorTimerRequest, opts ...grpc.CallOption) (*OnActorReminderResponse, error)
+}
+
+type appCallbackActorsClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewAppCallbackActorsClient(cc grpc.ClientConnInterface) AppCallbackActorsClient {
+	return &appCallbackActorsClient{cc}
+}
+
+func (c *appCallbackActorsClient) GetRegisteredActors(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*RegisteredActorsResponse, error) {
+	out := new(RegisteredActorsResponse)
+	err := c.cc.Invoke(ctx, AppCallbackActors_GetRegisteredActors_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *appCallbackActorsClient) OnActorActivate(ctx context.Context, in *ActivateActorRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, AppCallbackActors_OnActorActivate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *appCallbackActorsClient) OnActorDeactivate(ctx context.Context, in *DeactivateActorRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, AppCallbackActors_OnActorDeactivate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *appCallbackActorsClient) OnActorInvoke(ctx context.Context, in *OnActorInvokeRequest, opts ...grpc.CallOption) (*OnActorInvokeResponse, error) {
+	out := new(OnActorInvokeResponse)
+	err := c.cc.Invoke(ctx, AppCallbackActors_OnActorInvoke_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *appCallbackActorsClient) OnActorReminder(ctx context.Context, in *OnActorReminderRequest, opts ...grpc.CallOption) (*OnActorReminderResponse, error) {
+	out := new(OnActorReminderResponse)
+	err := c.cc.Invoke(ctx, AppCallbackActors_OnActorReminder_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *appCallbackActorsClient) OnActorTimer(ctx context.Context, in *OnActorTimerRequest, opts ...grpc.CallOption) (*OnActorReminderResponse, error) {
+	out := new(OnActorReminderResponse)
+	err := c.cc.Invoke(ctx, AppCallbackActors_OnActorTimer_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// AppCallbackActorsServer is the server API for AppCallbackActors service.
+// All implementations should embed UnimplementedAppCallbackActorsServer
+// for forward compatibility
+type AppCallbackActorsServer interface {
+	// GetRegisteredActors returns the actor types the app hosts together with
+	// per-type runtime configuration.
+	GetRegisteredActors(context.Context, *emptypb.Empty) (*RegisteredActorsResponse, error)
+	// OnActorActivate is invoked when Dapr activates a new actor instance on
+	// this host.
+	OnActorActivate(context.Context, *ActivateActorRequest) (*emptypb.Empty, error)
+	// OnActorDeactivate is invoked when Dapr deactivates an actor instance.
+	OnActorDeactivate(context.Context, *DeactivateActorRequest) (*emptypb.Empty, error)
+	// OnActorInvoke invokes a method on an actor hosted by this app.
+	OnActorInvoke(context.Context, *OnActorInvokeRequest) (*OnActorInvokeResponse, error)
+	// OnActorReminder fires a reminder on an actor hosted by this app.
+	OnActorReminder(context.Context, *OnActorReminderRequest) (*OnActorReminderResponse, error)
+	// OnActorTimer fires a timer on an actor hosted by this app.
+	OnActorTimer(context.Context, *OnActorTimerRequest) (*OnActorReminderResponse, error)
+}
+
+// UnimplementedAppCallbackActorsServer should be embedded to have forward compatible implementations.
+type UnimplementedAppCallbackActorsServer struct {
+}
+
+func (UnimplementedAppCallbackActorsServer) GetRegisteredActors(context.Context, *emptypb.Empty) (*RegisteredActorsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRegisteredActors not implemented")
+}
+func (UnimplementedAppCallbackActorsServer) OnActorActivate(context.Context, *ActivateActorRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OnActorActivate not implemented")
+}
+func (UnimplementedAppCallbackActorsServer) OnActorDeactivate(context.Context, *DeactivateActorRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OnActorDeactivate not implemented")
+}
+func (UnimplementedAppCallbackActorsServer) OnActorInvoke(context.Context, *OnActorInvokeRequest) (*OnActorInvokeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OnActorInvoke not implemented")
+}
+func (UnimplementedAppCallbackActorsServer) OnActorReminder(context.Context, *OnActorReminderRequest) (*OnActorReminderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OnActorReminder not implemented")
+}
+func (UnimplementedAppCallbackActorsServer) OnActorTimer(context.Context, *OnActorTimerRequest) (*OnActorReminderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OnActorTimer not implemented")
+}
+
+// UnsafeAppCallbackActorsServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AppCallbackActorsServer will
+// result in compilation errors.
+type UnsafeAppCallbackActorsServer interface {
+	mustEmbedUnimplementedAppCallbackActorsServer()
+}
+
+func RegisterAppCallbackActorsServer(s grpc.ServiceRegistrar, srv AppCallbackActorsServer) {
+	s.RegisterService(&AppCallbackActors_ServiceDesc, srv)
+}
+
+func _AppCallbackActors_GetRegisteredActors_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AppCallbackActorsServer).GetRegisteredActors(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AppCallbackActors_GetRegisteredActors_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AppCallbackActorsServer).GetRegisteredActors(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AppCallbackActors_OnActorActivate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ActivateActorRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AppCallbackActorsServer).OnActorActivate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AppCallbackActors_OnActorActivate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AppCallbackActorsServer).OnActorActivate(ctx, req.(*ActivateActorRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AppCallbackActors_OnActorDeactivate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeactivateActorRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AppCallbackActorsServer).OnActorDeactivate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AppCallbackActors_OnActorDeactivate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AppCallbackActorsServer).OnActorDeactivate(ctx, req.(*DeactivateActorRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AppCallbackActors_OnActorInvoke_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OnActorInvokeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AppCallbackActorsServer).OnActorInvoke(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AppCallbackActors_OnActorInvoke_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AppCallbackActorsServer).OnActorInvoke(ctx, req.(*OnActorInvokeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AppCallbackActors_OnActorReminder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OnActorReminderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AppCallbackActorsServer).OnActorReminder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AppCallbackActors_OnActorReminder_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AppCallbackActorsServer).OnActorReminder(ctx, req.(*OnActorReminderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AppCallbackActors_OnActorTimer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OnActorTimerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AppCallbackActorsServer).OnActorTimer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AppCallbackActors_OnActorTimer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AppCallbackActorsServer).OnActorTimer(ctx, req.(*OnActorTimerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// AppCallbackActors_ServiceDesc is the grpc.ServiceDesc for AppCallbackActors service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var AppCallbackActors_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "dapr.proto.runtime.v1.AppCallbackActors",
+	HandlerType: (*AppCallbackActorsServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetRegisteredActors",
+			Handler:    _AppCallbackActors_GetRegisteredActors_Handler,
+		},
+		{
+			MethodName: "OnActorActivate",
+			Handler:    _AppCallbackActors_OnActorActivate_Handler,
+		},
+		{
+			MethodName: "OnActorDeactivate",
+			Handler:    _AppCallbackActors_OnActorDeactivate_Handler,
+		},
+		{
+			MethodName: "OnActorInvoke",
+			Handler:    _AppCallbackActors_OnActorInvoke_Handler,
+		},
+		{
+			MethodName: "OnActorReminder",
+			Handler:    _AppCallbackActors_OnActorReminder_Handler,
+		},
+		{
+			MethodName: "OnActorTimer",
+			Handler:    _AppCallbackActors_OnActorTimer_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "dapr/proto/runtime/v1/appcallback.proto",
+}

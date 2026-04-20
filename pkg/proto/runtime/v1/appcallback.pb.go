@@ -86,7 +86,7 @@ func (x TopicEventResponse_TopicEventResponseStatus) Number() protoreflect.EnumN
 
 // Deprecated: Use TopicEventResponse_TopicEventResponseStatus.Descriptor instead.
 func (TopicEventResponse_TopicEventResponseStatus) EnumDescriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{3, 0}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{13, 0}
 }
 
 // BindingEventConcurrency is the kind of concurrency
@@ -135,7 +135,742 @@ func (x BindingEventResponse_BindingEventConcurrency) Number() protoreflect.Enum
 
 // Deprecated: Use BindingEventResponse_BindingEventConcurrency.Descriptor instead.
 func (BindingEventResponse_BindingEventConcurrency) EnumDescriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{10, 0}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{20, 0}
+}
+
+// RegisteredActorsResponse describes the actor types hosted by the app and
+// the runtime configuration that applies to them.
+type RegisteredActorsResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// entities is the list of actor types this app hosts.
+	Entities []string `protobuf:"bytes,1,rep,name=entities,proto3" json:"entities,omitempty"`
+	// actor_idle_timeout is the default idle timeout for all actor types as a
+	// duration string (e.g. "1h"). Empty means use Dapr's default.
+	ActorIdleTimeout string `protobuf:"bytes,2,opt,name=actor_idle_timeout,json=actorIdleTimeout,proto3" json:"actor_idle_timeout,omitempty"`
+	// drain_ongoing_call_timeout is the duration Dapr waits for ongoing
+	// invocations to finish when an actor is rebalanced (e.g. "30s"). Empty
+	// means use Dapr's default.
+	DrainOngoingCallTimeout string `protobuf:"bytes,3,opt,name=drain_ongoing_call_timeout,json=drainOngoingCallTimeout,proto3" json:"drain_ongoing_call_timeout,omitempty"`
+	// drain_rebalanced_actors, when true, instructs Dapr to drain invocations
+	// from a rebalanced actor rather than aborting them.
+	DrainRebalancedActors *bool `protobuf:"varint,4,opt,name=drain_rebalanced_actors,json=drainRebalancedActors,proto3,oneof" json:"drain_rebalanced_actors,omitempty"`
+	// reentrancy is the default reentrancy configuration applied to all actor
+	// types.
+	Reentrancy *ActorReentrancyConfig `protobuf:"bytes,5,opt,name=reentrancy,proto3" json:"reentrancy,omitempty"`
+	// entities_config applies per-actor-type overrides on top of the defaults
+	// above.
+	EntitiesConfig []*ActorEntityConfig `protobuf:"bytes,6,rep,name=entities_config,json=entitiesConfig,proto3" json:"entities_config,omitempty"`
+}
+
+func (x *RegisteredActorsResponse) Reset() {
+	*x = RegisteredActorsResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RegisteredActorsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RegisteredActorsResponse) ProtoMessage() {}
+
+func (x *RegisteredActorsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RegisteredActorsResponse.ProtoReflect.Descriptor instead.
+func (*RegisteredActorsResponse) Descriptor() ([]byte, []int) {
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *RegisteredActorsResponse) GetEntities() []string {
+	if x != nil {
+		return x.Entities
+	}
+	return nil
+}
+
+func (x *RegisteredActorsResponse) GetActorIdleTimeout() string {
+	if x != nil {
+		return x.ActorIdleTimeout
+	}
+	return ""
+}
+
+func (x *RegisteredActorsResponse) GetDrainOngoingCallTimeout() string {
+	if x != nil {
+		return x.DrainOngoingCallTimeout
+	}
+	return ""
+}
+
+func (x *RegisteredActorsResponse) GetDrainRebalancedActors() bool {
+	if x != nil && x.DrainRebalancedActors != nil {
+		return *x.DrainRebalancedActors
+	}
+	return false
+}
+
+func (x *RegisteredActorsResponse) GetReentrancy() *ActorReentrancyConfig {
+	if x != nil {
+		return x.Reentrancy
+	}
+	return nil
+}
+
+func (x *RegisteredActorsResponse) GetEntitiesConfig() []*ActorEntityConfig {
+	if x != nil {
+		return x.EntitiesConfig
+	}
+	return nil
+}
+
+// ActorEntityConfig overrides the default actor runtime configuration for a
+// specific set of entities.
+type ActorEntityConfig struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Entities                []string               `protobuf:"bytes,1,rep,name=entities,proto3" json:"entities,omitempty"`
+	ActorIdleTimeout        string                 `protobuf:"bytes,2,opt,name=actor_idle_timeout,json=actorIdleTimeout,proto3" json:"actor_idle_timeout,omitempty"`
+	DrainOngoingCallTimeout string                 `protobuf:"bytes,3,opt,name=drain_ongoing_call_timeout,json=drainOngoingCallTimeout,proto3" json:"drain_ongoing_call_timeout,omitempty"`
+	DrainRebalancedActors   *bool                  `protobuf:"varint,4,opt,name=drain_rebalanced_actors,json=drainRebalancedActors,proto3,oneof" json:"drain_rebalanced_actors,omitempty"`
+	Reentrancy              *ActorReentrancyConfig `protobuf:"bytes,5,opt,name=reentrancy,proto3" json:"reentrancy,omitempty"`
+}
+
+func (x *ActorEntityConfig) Reset() {
+	*x = ActorEntityConfig{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ActorEntityConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ActorEntityConfig) ProtoMessage() {}
+
+func (x *ActorEntityConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ActorEntityConfig.ProtoReflect.Descriptor instead.
+func (*ActorEntityConfig) Descriptor() ([]byte, []int) {
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *ActorEntityConfig) GetEntities() []string {
+	if x != nil {
+		return x.Entities
+	}
+	return nil
+}
+
+func (x *ActorEntityConfig) GetActorIdleTimeout() string {
+	if x != nil {
+		return x.ActorIdleTimeout
+	}
+	return ""
+}
+
+func (x *ActorEntityConfig) GetDrainOngoingCallTimeout() string {
+	if x != nil {
+		return x.DrainOngoingCallTimeout
+	}
+	return ""
+}
+
+func (x *ActorEntityConfig) GetDrainRebalancedActors() bool {
+	if x != nil && x.DrainRebalancedActors != nil {
+		return *x.DrainRebalancedActors
+	}
+	return false
+}
+
+func (x *ActorEntityConfig) GetReentrancy() *ActorReentrancyConfig {
+	if x != nil {
+		return x.Reentrancy
+	}
+	return nil
+}
+
+// ActorReentrancyConfig configures actor reentrancy behavior.
+type ActorReentrancyConfig struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Enabled       bool   `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	MaxStackDepth *int32 `protobuf:"varint,2,opt,name=max_stack_depth,json=maxStackDepth,proto3,oneof" json:"max_stack_depth,omitempty"`
+}
+
+func (x *ActorReentrancyConfig) Reset() {
+	*x = ActorReentrancyConfig{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ActorReentrancyConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ActorReentrancyConfig) ProtoMessage() {}
+
+func (x *ActorReentrancyConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ActorReentrancyConfig.ProtoReflect.Descriptor instead.
+func (*ActorReentrancyConfig) Descriptor() ([]byte, []int) {
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ActorReentrancyConfig) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
+func (x *ActorReentrancyConfig) GetMaxStackDepth() int32 {
+	if x != nil && x.MaxStackDepth != nil {
+		return *x.MaxStackDepth
+	}
+	return 0
+}
+
+// ActivateActorRequest is the request payload for OnActorActivate.
+type ActivateActorRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ActorType string `protobuf:"bytes,1,opt,name=actor_type,json=actorType,proto3" json:"actor_type,omitempty"`
+	ActorId   string `protobuf:"bytes,2,opt,name=actor_id,json=actorId,proto3" json:"actor_id,omitempty"`
+}
+
+func (x *ActivateActorRequest) Reset() {
+	*x = ActivateActorRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ActivateActorRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ActivateActorRequest) ProtoMessage() {}
+
+func (x *ActivateActorRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ActivateActorRequest.ProtoReflect.Descriptor instead.
+func (*ActivateActorRequest) Descriptor() ([]byte, []int) {
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ActivateActorRequest) GetActorType() string {
+	if x != nil {
+		return x.ActorType
+	}
+	return ""
+}
+
+func (x *ActivateActorRequest) GetActorId() string {
+	if x != nil {
+		return x.ActorId
+	}
+	return ""
+}
+
+// DeactivateActorRequest is the request payload for OnActorDeactivate.
+type DeactivateActorRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ActorType string `protobuf:"bytes,1,opt,name=actor_type,json=actorType,proto3" json:"actor_type,omitempty"`
+	ActorId   string `protobuf:"bytes,2,opt,name=actor_id,json=actorId,proto3" json:"actor_id,omitempty"`
+}
+
+func (x *DeactivateActorRequest) Reset() {
+	*x = DeactivateActorRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeactivateActorRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeactivateActorRequest) ProtoMessage() {}
+
+func (x *DeactivateActorRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeactivateActorRequest.ProtoReflect.Descriptor instead.
+func (*DeactivateActorRequest) Descriptor() ([]byte, []int) {
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *DeactivateActorRequest) GetActorType() string {
+	if x != nil {
+		return x.ActorType
+	}
+	return ""
+}
+
+func (x *DeactivateActorRequest) GetActorId() string {
+	if x != nil {
+		return x.ActorId
+	}
+	return ""
+}
+
+// OnActorInvokeRequest is the request payload for OnActorInvoke.
+type OnActorInvokeRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ActorType string `protobuf:"bytes,1,opt,name=actor_type,json=actorType,proto3" json:"actor_type,omitempty"`
+	ActorId   string `protobuf:"bytes,2,opt,name=actor_id,json=actorId,proto3" json:"actor_id,omitempty"`
+	Method    string `protobuf:"bytes,3,opt,name=method,proto3" json:"method,omitempty"`
+	Data      []byte `protobuf:"bytes,4,opt,name=data,proto3" json:"data,omitempty"`
+	// metadata carries request-level headers from the original caller,
+	// including "content-type".
+	Metadata map[string]string `protobuf:"bytes,5,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (x *OnActorInvokeRequest) Reset() {
+	*x = OnActorInvokeRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *OnActorInvokeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OnActorInvokeRequest) ProtoMessage() {}
+
+func (x *OnActorInvokeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OnActorInvokeRequest.ProtoReflect.Descriptor instead.
+func (*OnActorInvokeRequest) Descriptor() ([]byte, []int) {
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *OnActorInvokeRequest) GetActorType() string {
+	if x != nil {
+		return x.ActorType
+	}
+	return ""
+}
+
+func (x *OnActorInvokeRequest) GetActorId() string {
+	if x != nil {
+		return x.ActorId
+	}
+	return ""
+}
+
+func (x *OnActorInvokeRequest) GetMethod() string {
+	if x != nil {
+		return x.Method
+	}
+	return ""
+}
+
+func (x *OnActorInvokeRequest) GetData() []byte {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+func (x *OnActorInvokeRequest) GetMetadata() map[string]string {
+	if x != nil {
+		return x.Metadata
+	}
+	return nil
+}
+
+// OnActorInvokeResponse is the response payload for OnActorInvoke.
+type OnActorInvokeResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Data []byte `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+	// metadata carries response-level headers, including "content-type".
+	Metadata map[string]string `protobuf:"bytes,2,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// error, when true, signals that data is an application-defined error
+	// payload returned from the actor method. Dapr passes the payload through
+	// to the original caller verbatim.
+	Error bool `protobuf:"varint,3,opt,name=error,proto3" json:"error,omitempty"`
+}
+
+func (x *OnActorInvokeResponse) Reset() {
+	*x = OnActorInvokeResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *OnActorInvokeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OnActorInvokeResponse) ProtoMessage() {}
+
+func (x *OnActorInvokeResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OnActorInvokeResponse.ProtoReflect.Descriptor instead.
+func (*OnActorInvokeResponse) Descriptor() ([]byte, []int) {
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *OnActorInvokeResponse) GetData() []byte {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+func (x *OnActorInvokeResponse) GetMetadata() map[string]string {
+	if x != nil {
+		return x.Metadata
+	}
+	return nil
+}
+
+func (x *OnActorInvokeResponse) GetError() bool {
+	if x != nil {
+		return x.Error
+	}
+	return false
+}
+
+// OnActorReminderRequest is the request payload for OnActorReminder.
+type OnActorReminderRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ActorType string     `protobuf:"bytes,1,opt,name=actor_type,json=actorType,proto3" json:"actor_type,omitempty"`
+	ActorId   string     `protobuf:"bytes,2,opt,name=actor_id,json=actorId,proto3" json:"actor_id,omitempty"`
+	Name      string     `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	DueTime   string     `protobuf:"bytes,4,opt,name=due_time,json=dueTime,proto3" json:"due_time,omitempty"`
+	Period    string     `protobuf:"bytes,5,opt,name=period,proto3" json:"period,omitempty"`
+	Data      *anypb.Any `protobuf:"bytes,6,opt,name=data,proto3" json:"data,omitempty"`
+}
+
+func (x *OnActorReminderRequest) Reset() {
+	*x = OnActorReminderRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *OnActorReminderRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OnActorReminderRequest) ProtoMessage() {}
+
+func (x *OnActorReminderRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OnActorReminderRequest.ProtoReflect.Descriptor instead.
+func (*OnActorReminderRequest) Descriptor() ([]byte, []int) {
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *OnActorReminderRequest) GetActorType() string {
+	if x != nil {
+		return x.ActorType
+	}
+	return ""
+}
+
+func (x *OnActorReminderRequest) GetActorId() string {
+	if x != nil {
+		return x.ActorId
+	}
+	return ""
+}
+
+func (x *OnActorReminderRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *OnActorReminderRequest) GetDueTime() string {
+	if x != nil {
+		return x.DueTime
+	}
+	return ""
+}
+
+func (x *OnActorReminderRequest) GetPeriod() string {
+	if x != nil {
+		return x.Period
+	}
+	return ""
+}
+
+func (x *OnActorReminderRequest) GetData() *anypb.Any {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+// OnActorTimerRequest is the request payload for OnActorTimer.
+type OnActorTimerRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ActorType string     `protobuf:"bytes,1,opt,name=actor_type,json=actorType,proto3" json:"actor_type,omitempty"`
+	ActorId   string     `protobuf:"bytes,2,opt,name=actor_id,json=actorId,proto3" json:"actor_id,omitempty"`
+	Name      string     `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	DueTime   string     `protobuf:"bytes,4,opt,name=due_time,json=dueTime,proto3" json:"due_time,omitempty"`
+	Period    string     `protobuf:"bytes,5,opt,name=period,proto3" json:"period,omitempty"`
+	Callback  string     `protobuf:"bytes,6,opt,name=callback,proto3" json:"callback,omitempty"`
+	Data      *anypb.Any `protobuf:"bytes,7,opt,name=data,proto3" json:"data,omitempty"`
+}
+
+func (x *OnActorTimerRequest) Reset() {
+	*x = OnActorTimerRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *OnActorTimerRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OnActorTimerRequest) ProtoMessage() {}
+
+func (x *OnActorTimerRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OnActorTimerRequest.ProtoReflect.Descriptor instead.
+func (*OnActorTimerRequest) Descriptor() ([]byte, []int) {
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *OnActorTimerRequest) GetActorType() string {
+	if x != nil {
+		return x.ActorType
+	}
+	return ""
+}
+
+func (x *OnActorTimerRequest) GetActorId() string {
+	if x != nil {
+		return x.ActorId
+	}
+	return ""
+}
+
+func (x *OnActorTimerRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *OnActorTimerRequest) GetDueTime() string {
+	if x != nil {
+		return x.DueTime
+	}
+	return ""
+}
+
+func (x *OnActorTimerRequest) GetPeriod() string {
+	if x != nil {
+		return x.Period
+	}
+	return ""
+}
+
+func (x *OnActorTimerRequest) GetCallback() string {
+	if x != nil {
+		return x.Callback
+	}
+	return ""
+}
+
+func (x *OnActorTimerRequest) GetData() *anypb.Any {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+// OnActorReminderResponse is returned from both OnActorReminder and
+// OnActorTimer.
+type OnActorReminderResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// cancel, when true, signals to Dapr that the reminder or timer should
+	// not fire again and should be unregistered.
+	Cancel bool `protobuf:"varint,1,opt,name=cancel,proto3" json:"cancel,omitempty"`
+}
+
+func (x *OnActorReminderResponse) Reset() {
+	*x = OnActorReminderResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *OnActorReminderResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OnActorReminderResponse) ProtoMessage() {}
+
+func (x *OnActorReminderResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OnActorReminderResponse.ProtoReflect.Descriptor instead.
+func (*OnActorReminderResponse) Descriptor() ([]byte, []int) {
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *OnActorReminderResponse) GetCancel() bool {
+	if x != nil {
+		return x.Cancel
+	}
+	return false
 }
 
 type JobEventRequest struct {
@@ -164,7 +899,7 @@ type JobEventRequest struct {
 func (x *JobEventRequest) Reset() {
 	*x = JobEventRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[0]
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -177,7 +912,7 @@ func (x *JobEventRequest) String() string {
 func (*JobEventRequest) ProtoMessage() {}
 
 func (x *JobEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[0]
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -190,7 +925,7 @@ func (x *JobEventRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use JobEventRequest.ProtoReflect.Descriptor instead.
 func (*JobEventRequest) Descriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{0}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *JobEventRequest) GetName() string {
@@ -238,7 +973,7 @@ type JobEventResponse struct {
 func (x *JobEventResponse) Reset() {
 	*x = JobEventResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[1]
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -251,7 +986,7 @@ func (x *JobEventResponse) String() string {
 func (*JobEventResponse) ProtoMessage() {}
 
 func (x *JobEventResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[1]
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -264,7 +999,7 @@ func (x *JobEventResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use JobEventResponse.ProtoReflect.Descriptor instead.
 func (*JobEventResponse) Descriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{1}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{11}
 }
 
 // TopicEventRequest message is compatible with CloudEvent spec v1.0
@@ -306,7 +1041,7 @@ type TopicEventRequest struct {
 func (x *TopicEventRequest) Reset() {
 	*x = TopicEventRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[2]
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -319,7 +1054,7 @@ func (x *TopicEventRequest) String() string {
 func (*TopicEventRequest) ProtoMessage() {}
 
 func (x *TopicEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[2]
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -332,7 +1067,7 @@ func (x *TopicEventRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TopicEventRequest.ProtoReflect.Descriptor instead.
 func (*TopicEventRequest) Descriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{2}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *TopicEventRequest) GetId() string {
@@ -418,7 +1153,7 @@ type TopicEventResponse struct {
 func (x *TopicEventResponse) Reset() {
 	*x = TopicEventResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[3]
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -431,7 +1166,7 @@ func (x *TopicEventResponse) String() string {
 func (*TopicEventResponse) ProtoMessage() {}
 
 func (x *TopicEventResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[3]
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -444,7 +1179,7 @@ func (x *TopicEventResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TopicEventResponse.ProtoReflect.Descriptor instead.
 func (*TopicEventResponse) Descriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{3}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *TopicEventResponse) GetStatus() TopicEventResponse_TopicEventResponseStatus {
@@ -479,7 +1214,7 @@ type TopicEventCERequest struct {
 func (x *TopicEventCERequest) Reset() {
 	*x = TopicEventCERequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[4]
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -492,7 +1227,7 @@ func (x *TopicEventCERequest) String() string {
 func (*TopicEventCERequest) ProtoMessage() {}
 
 func (x *TopicEventCERequest) ProtoReflect() protoreflect.Message {
-	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[4]
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -505,7 +1240,7 @@ func (x *TopicEventCERequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TopicEventCERequest.ProtoReflect.Descriptor instead.
 func (*TopicEventCERequest) Descriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{4}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *TopicEventCERequest) GetId() string {
@@ -581,7 +1316,7 @@ type TopicEventBulkRequestEntry struct {
 func (x *TopicEventBulkRequestEntry) Reset() {
 	*x = TopicEventBulkRequestEntry{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[5]
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -594,7 +1329,7 @@ func (x *TopicEventBulkRequestEntry) String() string {
 func (*TopicEventBulkRequestEntry) ProtoMessage() {}
 
 func (x *TopicEventBulkRequestEntry) ProtoReflect() protoreflect.Message {
-	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[5]
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -607,7 +1342,7 @@ func (x *TopicEventBulkRequestEntry) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TopicEventBulkRequestEntry.ProtoReflect.Descriptor instead.
 func (*TopicEventBulkRequestEntry) Descriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{5}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *TopicEventBulkRequestEntry) GetEntryId() string {
@@ -694,7 +1429,7 @@ type TopicEventBulkRequest struct {
 func (x *TopicEventBulkRequest) Reset() {
 	*x = TopicEventBulkRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[6]
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -707,7 +1442,7 @@ func (x *TopicEventBulkRequest) String() string {
 func (*TopicEventBulkRequest) ProtoMessage() {}
 
 func (x *TopicEventBulkRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[6]
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -720,7 +1455,7 @@ func (x *TopicEventBulkRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TopicEventBulkRequest.ProtoReflect.Descriptor instead.
 func (*TopicEventBulkRequest) Descriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{6}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *TopicEventBulkRequest) GetId() string {
@@ -788,7 +1523,7 @@ type TopicEventBulkResponseEntry struct {
 func (x *TopicEventBulkResponseEntry) Reset() {
 	*x = TopicEventBulkResponseEntry{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[7]
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -801,7 +1536,7 @@ func (x *TopicEventBulkResponseEntry) String() string {
 func (*TopicEventBulkResponseEntry) ProtoMessage() {}
 
 func (x *TopicEventBulkResponseEntry) ProtoReflect() protoreflect.Message {
-	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[7]
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -814,7 +1549,7 @@ func (x *TopicEventBulkResponseEntry) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TopicEventBulkResponseEntry.ProtoReflect.Descriptor instead.
 func (*TopicEventBulkResponseEntry) Descriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{7}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *TopicEventBulkResponseEntry) GetEntryId() string {
@@ -844,7 +1579,7 @@ type TopicEventBulkResponse struct {
 func (x *TopicEventBulkResponse) Reset() {
 	*x = TopicEventBulkResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[8]
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -857,7 +1592,7 @@ func (x *TopicEventBulkResponse) String() string {
 func (*TopicEventBulkResponse) ProtoMessage() {}
 
 func (x *TopicEventBulkResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[8]
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -870,7 +1605,7 @@ func (x *TopicEventBulkResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TopicEventBulkResponse.ProtoReflect.Descriptor instead.
 func (*TopicEventBulkResponse) Descriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{8}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *TopicEventBulkResponse) GetStatuses() []*TopicEventBulkResponseEntry {
@@ -897,7 +1632,7 @@ type BindingEventRequest struct {
 func (x *BindingEventRequest) Reset() {
 	*x = BindingEventRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[9]
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -910,7 +1645,7 @@ func (x *BindingEventRequest) String() string {
 func (*BindingEventRequest) ProtoMessage() {}
 
 func (x *BindingEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[9]
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -923,7 +1658,7 @@ func (x *BindingEventRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BindingEventRequest.ProtoReflect.Descriptor instead.
 func (*BindingEventRequest) Descriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{9}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *BindingEventRequest) GetName() string {
@@ -970,7 +1705,7 @@ type BindingEventResponse struct {
 func (x *BindingEventResponse) Reset() {
 	*x = BindingEventResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[10]
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -983,7 +1718,7 @@ func (x *BindingEventResponse) String() string {
 func (*BindingEventResponse) ProtoMessage() {}
 
 func (x *BindingEventResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[10]
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -996,7 +1731,7 @@ func (x *BindingEventResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BindingEventResponse.ProtoReflect.Descriptor instead.
 func (*BindingEventResponse) Descriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{10}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *BindingEventResponse) GetStoreName() string {
@@ -1047,7 +1782,7 @@ type ListTopicSubscriptionsResponse struct {
 func (x *ListTopicSubscriptionsResponse) Reset() {
 	*x = ListTopicSubscriptionsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[11]
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1060,7 +1795,7 @@ func (x *ListTopicSubscriptionsResponse) String() string {
 func (*ListTopicSubscriptionsResponse) ProtoMessage() {}
 
 func (x *ListTopicSubscriptionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[11]
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1073,7 +1808,7 @@ func (x *ListTopicSubscriptionsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTopicSubscriptionsResponse.ProtoReflect.Descriptor instead.
 func (*ListTopicSubscriptionsResponse) Descriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{11}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *ListTopicSubscriptionsResponse) GetSubscriptions() []*TopicSubscription {
@@ -1107,7 +1842,7 @@ type TopicSubscription struct {
 func (x *TopicSubscription) Reset() {
 	*x = TopicSubscription{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[12]
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1120,7 +1855,7 @@ func (x *TopicSubscription) String() string {
 func (*TopicSubscription) ProtoMessage() {}
 
 func (x *TopicSubscription) ProtoReflect() protoreflect.Message {
-	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[12]
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1133,7 +1868,7 @@ func (x *TopicSubscription) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TopicSubscription.ProtoReflect.Descriptor instead.
 func (*TopicSubscription) Descriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{12}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *TopicSubscription) GetPubsubName() string {
@@ -1192,7 +1927,7 @@ type TopicRoutes struct {
 func (x *TopicRoutes) Reset() {
 	*x = TopicRoutes{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[13]
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1205,7 +1940,7 @@ func (x *TopicRoutes) String() string {
 func (*TopicRoutes) ProtoMessage() {}
 
 func (x *TopicRoutes) ProtoReflect() protoreflect.Message {
-	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[13]
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1218,7 +1953,7 @@ func (x *TopicRoutes) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TopicRoutes.ProtoReflect.Descriptor instead.
 func (*TopicRoutes) Descriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{13}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *TopicRoutes) GetRules() []*TopicRule {
@@ -1253,7 +1988,7 @@ type TopicRule struct {
 func (x *TopicRule) Reset() {
 	*x = TopicRule{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[14]
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1266,7 +2001,7 @@ func (x *TopicRule) String() string {
 func (*TopicRule) ProtoMessage() {}
 
 func (x *TopicRule) ProtoReflect() protoreflect.Message {
-	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[14]
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1279,7 +2014,7 @@ func (x *TopicRule) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TopicRule.ProtoReflect.Descriptor instead.
 func (*TopicRule) Descriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{14}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *TopicRule) GetMatch() string {
@@ -1313,7 +2048,7 @@ type BulkSubscribeConfig struct {
 func (x *BulkSubscribeConfig) Reset() {
 	*x = BulkSubscribeConfig{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[15]
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1326,7 +2061,7 @@ func (x *BulkSubscribeConfig) String() string {
 func (*BulkSubscribeConfig) ProtoMessage() {}
 
 func (x *BulkSubscribeConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[15]
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1339,7 +2074,7 @@ func (x *BulkSubscribeConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BulkSubscribeConfig.ProtoReflect.Descriptor instead.
 func (*BulkSubscribeConfig) Descriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{15}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *BulkSubscribeConfig) GetEnabled() bool {
@@ -1376,7 +2111,7 @@ type ListInputBindingsResponse struct {
 func (x *ListInputBindingsResponse) Reset() {
 	*x = ListInputBindingsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[16]
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1389,7 +2124,7 @@ func (x *ListInputBindingsResponse) String() string {
 func (*ListInputBindingsResponse) ProtoMessage() {}
 
 func (x *ListInputBindingsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[16]
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1402,7 +2137,7 @@ func (x *ListInputBindingsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListInputBindingsResponse.ProtoReflect.Descriptor instead.
 func (*ListInputBindingsResponse) Descriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{16}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *ListInputBindingsResponse) GetBindings() []string {
@@ -1423,7 +2158,7 @@ type HealthCheckResponse struct {
 func (x *HealthCheckResponse) Reset() {
 	*x = HealthCheckResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[17]
+		mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1436,7 +2171,7 @@ func (x *HealthCheckResponse) String() string {
 func (*HealthCheckResponse) ProtoMessage() {}
 
 func (x *HealthCheckResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[17]
+	mi := &file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1449,7 +2184,7 @@ func (x *HealthCheckResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HealthCheckResponse.ProtoReflect.Descriptor instead.
 func (*HealthCheckResponse) Descriptor() ([]byte, []int) {
-	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{17}
+	return file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP(), []int{27}
 }
 
 var File_dapr_proto_runtime_v1_appcallback_proto protoreflect.FileDescriptor
@@ -1466,7 +2201,131 @@ var file_dapr_proto_runtime_v1_appcallback_proto_rawDesc = []byte{
 	0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x76, 0x31, 0x2f, 0x63,
 	0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1c, 0x67, 0x6f, 0x6f,
 	0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x73, 0x74, 0x72,
-	0x75, 0x63, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xd6, 0x01, 0x0a, 0x0f, 0x4a, 0x6f,
+	0x75, 0x63, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x9b, 0x03, 0x0a, 0x18, 0x52, 0x65,
+	0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x65, 0x64, 0x41, 0x63, 0x74, 0x6f, 0x72, 0x73, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x69,
+	0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x08, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x69,
+	0x65, 0x73, 0x12, 0x2c, 0x0a, 0x12, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x5f, 0x69, 0x64, 0x6c, 0x65,
+	0x5f, 0x74, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x10,
+	0x61, 0x63, 0x74, 0x6f, 0x72, 0x49, 0x64, 0x6c, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74,
+	0x12, 0x3b, 0x0a, 0x1a, 0x64, 0x72, 0x61, 0x69, 0x6e, 0x5f, 0x6f, 0x6e, 0x67, 0x6f, 0x69, 0x6e,
+	0x67, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x17, 0x64, 0x72, 0x61, 0x69, 0x6e, 0x4f, 0x6e, 0x67, 0x6f, 0x69,
+	0x6e, 0x67, 0x43, 0x61, 0x6c, 0x6c, 0x54, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x12, 0x3b, 0x0a,
+	0x17, 0x64, 0x72, 0x61, 0x69, 0x6e, 0x5f, 0x72, 0x65, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65,
+	0x64, 0x5f, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x48, 0x00,
+	0x52, 0x15, 0x64, 0x72, 0x61, 0x69, 0x6e, 0x52, 0x65, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65,
+	0x64, 0x41, 0x63, 0x74, 0x6f, 0x72, 0x73, 0x88, 0x01, 0x01, 0x12, 0x4c, 0x0a, 0x0a, 0x72, 0x65,
+	0x65, 0x6e, 0x74, 0x72, 0x61, 0x6e, 0x63, 0x79, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2c,
+	0x2e, 0x64, 0x61, 0x70, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x72, 0x75, 0x6e, 0x74,
+	0x69, 0x6d, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x41, 0x63, 0x74, 0x6f, 0x72, 0x52, 0x65, 0x65, 0x6e,
+	0x74, 0x72, 0x61, 0x6e, 0x63, 0x79, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x52, 0x0a, 0x72, 0x65,
+	0x65, 0x6e, 0x74, 0x72, 0x61, 0x6e, 0x63, 0x79, 0x12, 0x51, 0x0a, 0x0f, 0x65, 0x6e, 0x74, 0x69,
+	0x74, 0x69, 0x65, 0x73, 0x5f, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x18, 0x06, 0x20, 0x03, 0x28,
+	0x0b, 0x32, 0x28, 0x2e, 0x64, 0x61, 0x70, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x72,
+	0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x41, 0x63, 0x74, 0x6f, 0x72, 0x45,
+	0x6e, 0x74, 0x69, 0x74, 0x79, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x52, 0x0e, 0x65, 0x6e, 0x74,
+	0x69, 0x74, 0x69, 0x65, 0x73, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x42, 0x1a, 0x0a, 0x18, 0x5f,
+	0x64, 0x72, 0x61, 0x69, 0x6e, 0x5f, 0x72, 0x65, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x64,
+	0x5f, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x73, 0x22, 0xc1, 0x02, 0x0a, 0x11, 0x41, 0x63, 0x74, 0x6f,
+	0x72, 0x45, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12, 0x1a, 0x0a,
+	0x08, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x69, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52,
+	0x08, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x69, 0x65, 0x73, 0x12, 0x2c, 0x0a, 0x12, 0x61, 0x63, 0x74,
+	0x6f, 0x72, 0x5f, 0x69, 0x64, 0x6c, 0x65, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x10, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x49, 0x64, 0x6c, 0x65,
+	0x54, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x12, 0x3b, 0x0a, 0x1a, 0x64, 0x72, 0x61, 0x69, 0x6e,
+	0x5f, 0x6f, 0x6e, 0x67, 0x6f, 0x69, 0x6e, 0x67, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x5f, 0x74, 0x69,
+	0x6d, 0x65, 0x6f, 0x75, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x17, 0x64, 0x72, 0x61,
+	0x69, 0x6e, 0x4f, 0x6e, 0x67, 0x6f, 0x69, 0x6e, 0x67, 0x43, 0x61, 0x6c, 0x6c, 0x54, 0x69, 0x6d,
+	0x65, 0x6f, 0x75, 0x74, 0x12, 0x3b, 0x0a, 0x17, 0x64, 0x72, 0x61, 0x69, 0x6e, 0x5f, 0x72, 0x65,
+	0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x64, 0x5f, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x73, 0x18,
+	0x04, 0x20, 0x01, 0x28, 0x08, 0x48, 0x00, 0x52, 0x15, 0x64, 0x72, 0x61, 0x69, 0x6e, 0x52, 0x65,
+	0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x64, 0x41, 0x63, 0x74, 0x6f, 0x72, 0x73, 0x88, 0x01,
+	0x01, 0x12, 0x4c, 0x0a, 0x0a, 0x72, 0x65, 0x65, 0x6e, 0x74, 0x72, 0x61, 0x6e, 0x63, 0x79, 0x18,
+	0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2c, 0x2e, 0x64, 0x61, 0x70, 0x72, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x2e, 0x72, 0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x41, 0x63,
+	0x74, 0x6f, 0x72, 0x52, 0x65, 0x65, 0x6e, 0x74, 0x72, 0x61, 0x6e, 0x63, 0x79, 0x43, 0x6f, 0x6e,
+	0x66, 0x69, 0x67, 0x52, 0x0a, 0x72, 0x65, 0x65, 0x6e, 0x74, 0x72, 0x61, 0x6e, 0x63, 0x79, 0x42,
+	0x1a, 0x0a, 0x18, 0x5f, 0x64, 0x72, 0x61, 0x69, 0x6e, 0x5f, 0x72, 0x65, 0x62, 0x61, 0x6c, 0x61,
+	0x6e, 0x63, 0x65, 0x64, 0x5f, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x73, 0x22, 0x72, 0x0a, 0x15, 0x41,
+	0x63, 0x74, 0x6f, 0x72, 0x52, 0x65, 0x65, 0x6e, 0x74, 0x72, 0x61, 0x6e, 0x63, 0x79, 0x43, 0x6f,
+	0x6e, 0x66, 0x69, 0x67, 0x12, 0x18, 0x0a, 0x07, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x12, 0x2b,
+	0x0a, 0x0f, 0x6d, 0x61, 0x78, 0x5f, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x5f, 0x64, 0x65, 0x70, 0x74,
+	0x68, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x48, 0x00, 0x52, 0x0d, 0x6d, 0x61, 0x78, 0x53, 0x74,
+	0x61, 0x63, 0x6b, 0x44, 0x65, 0x70, 0x74, 0x68, 0x88, 0x01, 0x01, 0x42, 0x12, 0x0a, 0x10, 0x5f,
+	0x6d, 0x61, 0x78, 0x5f, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x5f, 0x64, 0x65, 0x70, 0x74, 0x68, 0x22,
+	0x50, 0x0a, 0x14, 0x41, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x65, 0x41, 0x63, 0x74, 0x6f, 0x72,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x61, 0x63, 0x74, 0x6f, 0x72,
+	0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x63, 0x74,
+	0x6f, 0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x5f,
+	0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x49,
+	0x64, 0x22, 0x52, 0x0a, 0x16, 0x44, 0x65, 0x61, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x65, 0x41,
+	0x63, 0x74, 0x6f, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x61,
+	0x63, 0x74, 0x6f, 0x72, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x09, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x63,
+	0x74, 0x6f, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x63,
+	0x74, 0x6f, 0x72, 0x49, 0x64, 0x22, 0x90, 0x02, 0x0a, 0x14, 0x4f, 0x6e, 0x41, 0x63, 0x74, 0x6f,
+	0x72, 0x49, 0x6e, 0x76, 0x6f, 0x6b, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1d,
+	0x0a, 0x0a, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x09, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x19, 0x0a,
+	0x08, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x07, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x49, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x65, 0x74, 0x68,
+	0x6f, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64,
+	0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04,
+	0x64, 0x61, 0x74, 0x61, 0x12, 0x55, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
+	0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x39, 0x2e, 0x64, 0x61, 0x70, 0x72, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x2e, 0x72, 0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4f,
+	0x6e, 0x41, 0x63, 0x74, 0x6f, 0x72, 0x49, 0x6e, 0x76, 0x6f, 0x6b, 0x65, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72,
+	0x79, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x1a, 0x3b, 0x0a, 0x0d, 0x4d,
+	0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03,
+	0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14,
+	0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0xd6, 0x01, 0x0a, 0x15, 0x4f, 0x6e, 0x41,
+	0x63, 0x74, 0x6f, 0x72, 0x49, 0x6e, 0x76, 0x6f, 0x6b, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c,
+	0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x12, 0x56, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61,
+	0x74, 0x61, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x3a, 0x2e, 0x64, 0x61, 0x70, 0x72, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x72, 0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65, 0x2e, 0x76, 0x31,
+	0x2e, 0x4f, 0x6e, 0x41, 0x63, 0x74, 0x6f, 0x72, 0x49, 0x6e, 0x76, 0x6f, 0x6b, 0x65, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45,
+	0x6e, 0x74, 0x72, 0x79, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x12, 0x14,
+	0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x05, 0x65,
+	0x72, 0x72, 0x6f, 0x72, 0x1a, 0x3b, 0x0a, 0x0d, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
+	0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38,
+	0x01, 0x22, 0xc3, 0x01, 0x0a, 0x16, 0x4f, 0x6e, 0x41, 0x63, 0x74, 0x6f, 0x72, 0x52, 0x65, 0x6d,
+	0x69, 0x6e, 0x64, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1d, 0x0a, 0x0a,
+	0x61, 0x63, 0x74, 0x6f, 0x72, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x09, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x61,
+	0x63, 0x74, 0x6f, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61,
+	0x63, 0x74, 0x6f, 0x72, 0x49, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x64, 0x75,
+	0x65, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x64, 0x75,
+	0x65, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x18,
+	0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x12, 0x28, 0x0a,
+	0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e,
+	0x79, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0xdc, 0x01, 0x0a, 0x13, 0x4f, 0x6e, 0x41, 0x63,
+	0x74, 0x6f, 0x72, 0x54, 0x69, 0x6d, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x1d, 0x0a, 0x0a, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x19,
+	0x0a, 0x08, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x49, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d,
+	0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x19, 0x0a,
+	0x08, 0x64, 0x75, 0x65, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x07, 0x64, 0x75, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x65, 0x72, 0x69,
+	0x6f, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x65, 0x72, 0x69, 0x6f, 0x64,
+	0x12, 0x1a, 0x0a, 0x08, 0x63, 0x61, 0x6c, 0x6c, 0x62, 0x61, 0x63, 0x6b, 0x18, 0x06, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x08, 0x63, 0x61, 0x6c, 0x6c, 0x62, 0x61, 0x63, 0x6b, 0x12, 0x28, 0x0a, 0x04,
+	0x64, 0x61, 0x74, 0x61, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f,
+	0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79,
+	0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x31, 0x0a, 0x17, 0x4f, 0x6e, 0x41, 0x63, 0x74, 0x6f,
+	0x72, 0x52, 0x65, 0x6d, 0x69, 0x6e, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x16, 0x0a, 0x06, 0x63, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x08, 0x52, 0x06, 0x63, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x22, 0xd6, 0x01, 0x0a, 0x0f, 0x4a, 0x6f,
 	0x62, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a,
 	0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d,
 	0x65, 0x12, 0x28, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32,
@@ -1739,7 +2598,47 @@ var file_dapr_proto_runtime_v1_appcallback_proto_rawDesc = []byte{
 	0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x27, 0x2e, 0x64, 0x61, 0x70, 0x72,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x72, 0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65, 0x2e, 0x76,
 	0x31, 0x2e, 0x4a, 0x6f, 0x62, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x42, 0x79, 0x0a, 0x0a, 0x69, 0x6f, 0x2e, 0x64, 0x61, 0x70, 0x72, 0x2e, 0x76, 0x31,
+	0x73, 0x65, 0x32, 0xfd, 0x04, 0x0a, 0x11, 0x41, 0x70, 0x70, 0x43, 0x61, 0x6c, 0x6c, 0x62, 0x61,
+	0x63, 0x6b, 0x41, 0x63, 0x74, 0x6f, 0x72, 0x73, 0x12, 0x60, 0x0a, 0x13, 0x47, 0x65, 0x74, 0x52,
+	0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x65, 0x64, 0x41, 0x63, 0x74, 0x6f, 0x72, 0x73, 0x12,
+	0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
+	0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x2f, 0x2e, 0x64, 0x61, 0x70, 0x72, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x72, 0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65, 0x2e, 0x76, 0x31, 0x2e,
+	0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x65, 0x64, 0x41, 0x63, 0x74, 0x6f, 0x72, 0x73,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x58, 0x0a, 0x0f, 0x4f, 0x6e,
+	0x41, 0x63, 0x74, 0x6f, 0x72, 0x41, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x65, 0x12, 0x2b, 0x2e,
+	0x64, 0x61, 0x70, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x72, 0x75, 0x6e, 0x74, 0x69,
+	0x6d, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x41, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x65, 0x41, 0x63,
+	0x74, 0x6f, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f,
+	0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70,
+	0x74, 0x79, 0x22, 0x00, 0x12, 0x5c, 0x0a, 0x11, 0x4f, 0x6e, 0x41, 0x63, 0x74, 0x6f, 0x72, 0x44,
+	0x65, 0x61, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x65, 0x12, 0x2d, 0x2e, 0x64, 0x61, 0x70, 0x72,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x72, 0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65, 0x2e, 0x76,
+	0x31, 0x2e, 0x44, 0x65, 0x61, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x65, 0x41, 0x63, 0x74, 0x6f,
+	0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
+	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79,
+	0x22, 0x00, 0x12, 0x6c, 0x0a, 0x0d, 0x4f, 0x6e, 0x41, 0x63, 0x74, 0x6f, 0x72, 0x49, 0x6e, 0x76,
+	0x6f, 0x6b, 0x65, 0x12, 0x2b, 0x2e, 0x64, 0x61, 0x70, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x2e, 0x72, 0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4f, 0x6e, 0x41, 0x63,
+	0x74, 0x6f, 0x72, 0x49, 0x6e, 0x76, 0x6f, 0x6b, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x1a, 0x2c, 0x2e, 0x64, 0x61, 0x70, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x72, 0x75,
+	0x6e, 0x74, 0x69, 0x6d, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4f, 0x6e, 0x41, 0x63, 0x74, 0x6f, 0x72,
+	0x49, 0x6e, 0x76, 0x6f, 0x6b, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
+	0x12, 0x72, 0x0a, 0x0f, 0x4f, 0x6e, 0x41, 0x63, 0x74, 0x6f, 0x72, 0x52, 0x65, 0x6d, 0x69, 0x6e,
+	0x64, 0x65, 0x72, 0x12, 0x2d, 0x2e, 0x64, 0x61, 0x70, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x2e, 0x72, 0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4f, 0x6e, 0x41, 0x63,
+	0x74, 0x6f, 0x72, 0x52, 0x65, 0x6d, 0x69, 0x6e, 0x64, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x2e, 0x2e, 0x64, 0x61, 0x70, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e,
+	0x72, 0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4f, 0x6e, 0x41, 0x63, 0x74,
+	0x6f, 0x72, 0x52, 0x65, 0x6d, 0x69, 0x6e, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x22, 0x00, 0x12, 0x6c, 0x0a, 0x0c, 0x4f, 0x6e, 0x41, 0x63, 0x74, 0x6f, 0x72, 0x54,
+	0x69, 0x6d, 0x65, 0x72, 0x12, 0x2a, 0x2e, 0x64, 0x61, 0x70, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x2e, 0x72, 0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4f, 0x6e, 0x41,
+	0x63, 0x74, 0x6f, 0x72, 0x54, 0x69, 0x6d, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x1a, 0x2e, 0x2e, 0x64, 0x61, 0x70, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x72, 0x75,
+	0x6e, 0x74, 0x69, 0x6d, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4f, 0x6e, 0x41, 0x63, 0x74, 0x6f, 0x72,
+	0x52, 0x65, 0x6d, 0x69, 0x6e, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x00, 0x42, 0x79, 0x0a, 0x0a, 0x69, 0x6f, 0x2e, 0x64, 0x61, 0x70, 0x72, 0x2e, 0x76, 0x31,
 	0x42, 0x15, 0x44, 0x61, 0x70, 0x72, 0x41, 0x70, 0x70, 0x43, 0x61, 0x6c, 0x6c, 0x62, 0x61, 0x63,
 	0x6b, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x5a, 0x31, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
 	0x63, 0x6f, 0x6d, 0x2f, 0x64, 0x61, 0x70, 0x72, 0x2f, 0x64, 0x61, 0x70, 0x72, 0x2f, 0x70, 0x6b,
@@ -1763,83 +2662,114 @@ func file_dapr_proto_runtime_v1_appcallback_proto_rawDescGZIP() []byte {
 }
 
 var file_dapr_proto_runtime_v1_appcallback_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_dapr_proto_runtime_v1_appcallback_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
+var file_dapr_proto_runtime_v1_appcallback_proto_msgTypes = make([]protoimpl.MessageInfo, 34)
 var file_dapr_proto_runtime_v1_appcallback_proto_goTypes = []interface{}{
 	(TopicEventResponse_TopicEventResponseStatus)(0),  // 0: dapr.proto.runtime.v1.TopicEventResponse.TopicEventResponseStatus
 	(BindingEventResponse_BindingEventConcurrency)(0), // 1: dapr.proto.runtime.v1.BindingEventResponse.BindingEventConcurrency
-	(*JobEventRequest)(nil),                           // 2: dapr.proto.runtime.v1.JobEventRequest
-	(*JobEventResponse)(nil),                          // 3: dapr.proto.runtime.v1.JobEventResponse
-	(*TopicEventRequest)(nil),                         // 4: dapr.proto.runtime.v1.TopicEventRequest
-	(*TopicEventResponse)(nil),                        // 5: dapr.proto.runtime.v1.TopicEventResponse
-	(*TopicEventCERequest)(nil),                       // 6: dapr.proto.runtime.v1.TopicEventCERequest
-	(*TopicEventBulkRequestEntry)(nil),                // 7: dapr.proto.runtime.v1.TopicEventBulkRequestEntry
-	(*TopicEventBulkRequest)(nil),                     // 8: dapr.proto.runtime.v1.TopicEventBulkRequest
-	(*TopicEventBulkResponseEntry)(nil),               // 9: dapr.proto.runtime.v1.TopicEventBulkResponseEntry
-	(*TopicEventBulkResponse)(nil),                    // 10: dapr.proto.runtime.v1.TopicEventBulkResponse
-	(*BindingEventRequest)(nil),                       // 11: dapr.proto.runtime.v1.BindingEventRequest
-	(*BindingEventResponse)(nil),                      // 12: dapr.proto.runtime.v1.BindingEventResponse
-	(*ListTopicSubscriptionsResponse)(nil),            // 13: dapr.proto.runtime.v1.ListTopicSubscriptionsResponse
-	(*TopicSubscription)(nil),                         // 14: dapr.proto.runtime.v1.TopicSubscription
-	(*TopicRoutes)(nil),                               // 15: dapr.proto.runtime.v1.TopicRoutes
-	(*TopicRule)(nil),                                 // 16: dapr.proto.runtime.v1.TopicRule
-	(*BulkSubscribeConfig)(nil),                       // 17: dapr.proto.runtime.v1.BulkSubscribeConfig
-	(*ListInputBindingsResponse)(nil),                 // 18: dapr.proto.runtime.v1.ListInputBindingsResponse
-	(*HealthCheckResponse)(nil),                       // 19: dapr.proto.runtime.v1.HealthCheckResponse
-	nil,                                               // 20: dapr.proto.runtime.v1.TopicEventBulkRequestEntry.MetadataEntry
-	nil,                                               // 21: dapr.proto.runtime.v1.TopicEventBulkRequest.MetadataEntry
-	nil,                                               // 22: dapr.proto.runtime.v1.BindingEventRequest.MetadataEntry
-	nil,                                               // 23: dapr.proto.runtime.v1.TopicSubscription.MetadataEntry
-	(*anypb.Any)(nil),                                 // 24: google.protobuf.Any
-	(*v1.HTTPExtension)(nil),                          // 25: dapr.proto.common.v1.HTTPExtension
-	(*structpb.Struct)(nil),                           // 26: google.protobuf.Struct
-	(*v1.StateItem)(nil),                              // 27: dapr.proto.common.v1.StateItem
-	(*v1.InvokeRequest)(nil),                          // 28: dapr.proto.common.v1.InvokeRequest
-	(*emptypb.Empty)(nil),                             // 29: google.protobuf.Empty
-	(*v1.InvokeResponse)(nil),                         // 30: dapr.proto.common.v1.InvokeResponse
+	(*RegisteredActorsResponse)(nil),                  // 2: dapr.proto.runtime.v1.RegisteredActorsResponse
+	(*ActorEntityConfig)(nil),                         // 3: dapr.proto.runtime.v1.ActorEntityConfig
+	(*ActorReentrancyConfig)(nil),                     // 4: dapr.proto.runtime.v1.ActorReentrancyConfig
+	(*ActivateActorRequest)(nil),                      // 5: dapr.proto.runtime.v1.ActivateActorRequest
+	(*DeactivateActorRequest)(nil),                    // 6: dapr.proto.runtime.v1.DeactivateActorRequest
+	(*OnActorInvokeRequest)(nil),                      // 7: dapr.proto.runtime.v1.OnActorInvokeRequest
+	(*OnActorInvokeResponse)(nil),                     // 8: dapr.proto.runtime.v1.OnActorInvokeResponse
+	(*OnActorReminderRequest)(nil),                    // 9: dapr.proto.runtime.v1.OnActorReminderRequest
+	(*OnActorTimerRequest)(nil),                       // 10: dapr.proto.runtime.v1.OnActorTimerRequest
+	(*OnActorReminderResponse)(nil),                   // 11: dapr.proto.runtime.v1.OnActorReminderResponse
+	(*JobEventRequest)(nil),                           // 12: dapr.proto.runtime.v1.JobEventRequest
+	(*JobEventResponse)(nil),                          // 13: dapr.proto.runtime.v1.JobEventResponse
+	(*TopicEventRequest)(nil),                         // 14: dapr.proto.runtime.v1.TopicEventRequest
+	(*TopicEventResponse)(nil),                        // 15: dapr.proto.runtime.v1.TopicEventResponse
+	(*TopicEventCERequest)(nil),                       // 16: dapr.proto.runtime.v1.TopicEventCERequest
+	(*TopicEventBulkRequestEntry)(nil),                // 17: dapr.proto.runtime.v1.TopicEventBulkRequestEntry
+	(*TopicEventBulkRequest)(nil),                     // 18: dapr.proto.runtime.v1.TopicEventBulkRequest
+	(*TopicEventBulkResponseEntry)(nil),               // 19: dapr.proto.runtime.v1.TopicEventBulkResponseEntry
+	(*TopicEventBulkResponse)(nil),                    // 20: dapr.proto.runtime.v1.TopicEventBulkResponse
+	(*BindingEventRequest)(nil),                       // 21: dapr.proto.runtime.v1.BindingEventRequest
+	(*BindingEventResponse)(nil),                      // 22: dapr.proto.runtime.v1.BindingEventResponse
+	(*ListTopicSubscriptionsResponse)(nil),            // 23: dapr.proto.runtime.v1.ListTopicSubscriptionsResponse
+	(*TopicSubscription)(nil),                         // 24: dapr.proto.runtime.v1.TopicSubscription
+	(*TopicRoutes)(nil),                               // 25: dapr.proto.runtime.v1.TopicRoutes
+	(*TopicRule)(nil),                                 // 26: dapr.proto.runtime.v1.TopicRule
+	(*BulkSubscribeConfig)(nil),                       // 27: dapr.proto.runtime.v1.BulkSubscribeConfig
+	(*ListInputBindingsResponse)(nil),                 // 28: dapr.proto.runtime.v1.ListInputBindingsResponse
+	(*HealthCheckResponse)(nil),                       // 29: dapr.proto.runtime.v1.HealthCheckResponse
+	nil,                                               // 30: dapr.proto.runtime.v1.OnActorInvokeRequest.MetadataEntry
+	nil,                                               // 31: dapr.proto.runtime.v1.OnActorInvokeResponse.MetadataEntry
+	nil,                                               // 32: dapr.proto.runtime.v1.TopicEventBulkRequestEntry.MetadataEntry
+	nil,                                               // 33: dapr.proto.runtime.v1.TopicEventBulkRequest.MetadataEntry
+	nil,                                               // 34: dapr.proto.runtime.v1.BindingEventRequest.MetadataEntry
+	nil,                                               // 35: dapr.proto.runtime.v1.TopicSubscription.MetadataEntry
+	(*anypb.Any)(nil),                                 // 36: google.protobuf.Any
+	(*v1.HTTPExtension)(nil),                          // 37: dapr.proto.common.v1.HTTPExtension
+	(*structpb.Struct)(nil),                           // 38: google.protobuf.Struct
+	(*v1.StateItem)(nil),                              // 39: dapr.proto.common.v1.StateItem
+	(*v1.InvokeRequest)(nil),                          // 40: dapr.proto.common.v1.InvokeRequest
+	(*emptypb.Empty)(nil),                             // 41: google.protobuf.Empty
+	(*v1.InvokeResponse)(nil),                         // 42: dapr.proto.common.v1.InvokeResponse
 }
 var file_dapr_proto_runtime_v1_appcallback_proto_depIdxs = []int32{
-	24, // 0: dapr.proto.runtime.v1.JobEventRequest.data:type_name -> google.protobuf.Any
-	25, // 1: dapr.proto.runtime.v1.JobEventRequest.http_extension:type_name -> dapr.proto.common.v1.HTTPExtension
-	26, // 2: dapr.proto.runtime.v1.TopicEventRequest.extensions:type_name -> google.protobuf.Struct
-	0,  // 3: dapr.proto.runtime.v1.TopicEventResponse.status:type_name -> dapr.proto.runtime.v1.TopicEventResponse.TopicEventResponseStatus
-	26, // 4: dapr.proto.runtime.v1.TopicEventCERequest.extensions:type_name -> google.protobuf.Struct
-	6,  // 5: dapr.proto.runtime.v1.TopicEventBulkRequestEntry.cloud_event:type_name -> dapr.proto.runtime.v1.TopicEventCERequest
-	20, // 6: dapr.proto.runtime.v1.TopicEventBulkRequestEntry.metadata:type_name -> dapr.proto.runtime.v1.TopicEventBulkRequestEntry.MetadataEntry
-	7,  // 7: dapr.proto.runtime.v1.TopicEventBulkRequest.entries:type_name -> dapr.proto.runtime.v1.TopicEventBulkRequestEntry
-	21, // 8: dapr.proto.runtime.v1.TopicEventBulkRequest.metadata:type_name -> dapr.proto.runtime.v1.TopicEventBulkRequest.MetadataEntry
-	0,  // 9: dapr.proto.runtime.v1.TopicEventBulkResponseEntry.status:type_name -> dapr.proto.runtime.v1.TopicEventResponse.TopicEventResponseStatus
-	9,  // 10: dapr.proto.runtime.v1.TopicEventBulkResponse.statuses:type_name -> dapr.proto.runtime.v1.TopicEventBulkResponseEntry
-	22, // 11: dapr.proto.runtime.v1.BindingEventRequest.metadata:type_name -> dapr.proto.runtime.v1.BindingEventRequest.MetadataEntry
-	27, // 12: dapr.proto.runtime.v1.BindingEventResponse.states:type_name -> dapr.proto.common.v1.StateItem
-	1,  // 13: dapr.proto.runtime.v1.BindingEventResponse.concurrency:type_name -> dapr.proto.runtime.v1.BindingEventResponse.BindingEventConcurrency
-	14, // 14: dapr.proto.runtime.v1.ListTopicSubscriptionsResponse.subscriptions:type_name -> dapr.proto.runtime.v1.TopicSubscription
-	23, // 15: dapr.proto.runtime.v1.TopicSubscription.metadata:type_name -> dapr.proto.runtime.v1.TopicSubscription.MetadataEntry
-	15, // 16: dapr.proto.runtime.v1.TopicSubscription.routes:type_name -> dapr.proto.runtime.v1.TopicRoutes
-	17, // 17: dapr.proto.runtime.v1.TopicSubscription.bulk_subscribe:type_name -> dapr.proto.runtime.v1.BulkSubscribeConfig
-	16, // 18: dapr.proto.runtime.v1.TopicRoutes.rules:type_name -> dapr.proto.runtime.v1.TopicRule
-	28, // 19: dapr.proto.runtime.v1.AppCallback.OnInvoke:input_type -> dapr.proto.common.v1.InvokeRequest
-	29, // 20: dapr.proto.runtime.v1.AppCallback.ListTopicSubscriptions:input_type -> google.protobuf.Empty
-	4,  // 21: dapr.proto.runtime.v1.AppCallback.OnTopicEvent:input_type -> dapr.proto.runtime.v1.TopicEventRequest
-	29, // 22: dapr.proto.runtime.v1.AppCallback.ListInputBindings:input_type -> google.protobuf.Empty
-	11, // 23: dapr.proto.runtime.v1.AppCallback.OnBindingEvent:input_type -> dapr.proto.runtime.v1.BindingEventRequest
-	8,  // 24: dapr.proto.runtime.v1.AppCallback.OnBulkTopicEvent:input_type -> dapr.proto.runtime.v1.TopicEventBulkRequest
-	29, // 25: dapr.proto.runtime.v1.AppCallbackHealthCheck.HealthCheck:input_type -> google.protobuf.Empty
-	8,  // 26: dapr.proto.runtime.v1.AppCallbackAlpha.OnBulkTopicEventAlpha1:input_type -> dapr.proto.runtime.v1.TopicEventBulkRequest
-	2,  // 27: dapr.proto.runtime.v1.AppCallbackAlpha.OnJobEventAlpha1:input_type -> dapr.proto.runtime.v1.JobEventRequest
-	30, // 28: dapr.proto.runtime.v1.AppCallback.OnInvoke:output_type -> dapr.proto.common.v1.InvokeResponse
-	13, // 29: dapr.proto.runtime.v1.AppCallback.ListTopicSubscriptions:output_type -> dapr.proto.runtime.v1.ListTopicSubscriptionsResponse
-	5,  // 30: dapr.proto.runtime.v1.AppCallback.OnTopicEvent:output_type -> dapr.proto.runtime.v1.TopicEventResponse
-	18, // 31: dapr.proto.runtime.v1.AppCallback.ListInputBindings:output_type -> dapr.proto.runtime.v1.ListInputBindingsResponse
-	12, // 32: dapr.proto.runtime.v1.AppCallback.OnBindingEvent:output_type -> dapr.proto.runtime.v1.BindingEventResponse
-	10, // 33: dapr.proto.runtime.v1.AppCallback.OnBulkTopicEvent:output_type -> dapr.proto.runtime.v1.TopicEventBulkResponse
-	19, // 34: dapr.proto.runtime.v1.AppCallbackHealthCheck.HealthCheck:output_type -> dapr.proto.runtime.v1.HealthCheckResponse
-	10, // 35: dapr.proto.runtime.v1.AppCallbackAlpha.OnBulkTopicEventAlpha1:output_type -> dapr.proto.runtime.v1.TopicEventBulkResponse
-	3,  // 36: dapr.proto.runtime.v1.AppCallbackAlpha.OnJobEventAlpha1:output_type -> dapr.proto.runtime.v1.JobEventResponse
-	28, // [28:37] is the sub-list for method output_type
-	19, // [19:28] is the sub-list for method input_type
-	19, // [19:19] is the sub-list for extension type_name
-	19, // [19:19] is the sub-list for extension extendee
-	0,  // [0:19] is the sub-list for field type_name
+	4,  // 0: dapr.proto.runtime.v1.RegisteredActorsResponse.reentrancy:type_name -> dapr.proto.runtime.v1.ActorReentrancyConfig
+	3,  // 1: dapr.proto.runtime.v1.RegisteredActorsResponse.entities_config:type_name -> dapr.proto.runtime.v1.ActorEntityConfig
+	4,  // 2: dapr.proto.runtime.v1.ActorEntityConfig.reentrancy:type_name -> dapr.proto.runtime.v1.ActorReentrancyConfig
+	30, // 3: dapr.proto.runtime.v1.OnActorInvokeRequest.metadata:type_name -> dapr.proto.runtime.v1.OnActorInvokeRequest.MetadataEntry
+	31, // 4: dapr.proto.runtime.v1.OnActorInvokeResponse.metadata:type_name -> dapr.proto.runtime.v1.OnActorInvokeResponse.MetadataEntry
+	36, // 5: dapr.proto.runtime.v1.OnActorReminderRequest.data:type_name -> google.protobuf.Any
+	36, // 6: dapr.proto.runtime.v1.OnActorTimerRequest.data:type_name -> google.protobuf.Any
+	36, // 7: dapr.proto.runtime.v1.JobEventRequest.data:type_name -> google.protobuf.Any
+	37, // 8: dapr.proto.runtime.v1.JobEventRequest.http_extension:type_name -> dapr.proto.common.v1.HTTPExtension
+	38, // 9: dapr.proto.runtime.v1.TopicEventRequest.extensions:type_name -> google.protobuf.Struct
+	0,  // 10: dapr.proto.runtime.v1.TopicEventResponse.status:type_name -> dapr.proto.runtime.v1.TopicEventResponse.TopicEventResponseStatus
+	38, // 11: dapr.proto.runtime.v1.TopicEventCERequest.extensions:type_name -> google.protobuf.Struct
+	16, // 12: dapr.proto.runtime.v1.TopicEventBulkRequestEntry.cloud_event:type_name -> dapr.proto.runtime.v1.TopicEventCERequest
+	32, // 13: dapr.proto.runtime.v1.TopicEventBulkRequestEntry.metadata:type_name -> dapr.proto.runtime.v1.TopicEventBulkRequestEntry.MetadataEntry
+	17, // 14: dapr.proto.runtime.v1.TopicEventBulkRequest.entries:type_name -> dapr.proto.runtime.v1.TopicEventBulkRequestEntry
+	33, // 15: dapr.proto.runtime.v1.TopicEventBulkRequest.metadata:type_name -> dapr.proto.runtime.v1.TopicEventBulkRequest.MetadataEntry
+	0,  // 16: dapr.proto.runtime.v1.TopicEventBulkResponseEntry.status:type_name -> dapr.proto.runtime.v1.TopicEventResponse.TopicEventResponseStatus
+	19, // 17: dapr.proto.runtime.v1.TopicEventBulkResponse.statuses:type_name -> dapr.proto.runtime.v1.TopicEventBulkResponseEntry
+	34, // 18: dapr.proto.runtime.v1.BindingEventRequest.metadata:type_name -> dapr.proto.runtime.v1.BindingEventRequest.MetadataEntry
+	39, // 19: dapr.proto.runtime.v1.BindingEventResponse.states:type_name -> dapr.proto.common.v1.StateItem
+	1,  // 20: dapr.proto.runtime.v1.BindingEventResponse.concurrency:type_name -> dapr.proto.runtime.v1.BindingEventResponse.BindingEventConcurrency
+	24, // 21: dapr.proto.runtime.v1.ListTopicSubscriptionsResponse.subscriptions:type_name -> dapr.proto.runtime.v1.TopicSubscription
+	35, // 22: dapr.proto.runtime.v1.TopicSubscription.metadata:type_name -> dapr.proto.runtime.v1.TopicSubscription.MetadataEntry
+	25, // 23: dapr.proto.runtime.v1.TopicSubscription.routes:type_name -> dapr.proto.runtime.v1.TopicRoutes
+	27, // 24: dapr.proto.runtime.v1.TopicSubscription.bulk_subscribe:type_name -> dapr.proto.runtime.v1.BulkSubscribeConfig
+	26, // 25: dapr.proto.runtime.v1.TopicRoutes.rules:type_name -> dapr.proto.runtime.v1.TopicRule
+	40, // 26: dapr.proto.runtime.v1.AppCallback.OnInvoke:input_type -> dapr.proto.common.v1.InvokeRequest
+	41, // 27: dapr.proto.runtime.v1.AppCallback.ListTopicSubscriptions:input_type -> google.protobuf.Empty
+	14, // 28: dapr.proto.runtime.v1.AppCallback.OnTopicEvent:input_type -> dapr.proto.runtime.v1.TopicEventRequest
+	41, // 29: dapr.proto.runtime.v1.AppCallback.ListInputBindings:input_type -> google.protobuf.Empty
+	21, // 30: dapr.proto.runtime.v1.AppCallback.OnBindingEvent:input_type -> dapr.proto.runtime.v1.BindingEventRequest
+	18, // 31: dapr.proto.runtime.v1.AppCallback.OnBulkTopicEvent:input_type -> dapr.proto.runtime.v1.TopicEventBulkRequest
+	41, // 32: dapr.proto.runtime.v1.AppCallbackHealthCheck.HealthCheck:input_type -> google.protobuf.Empty
+	18, // 33: dapr.proto.runtime.v1.AppCallbackAlpha.OnBulkTopicEventAlpha1:input_type -> dapr.proto.runtime.v1.TopicEventBulkRequest
+	12, // 34: dapr.proto.runtime.v1.AppCallbackAlpha.OnJobEventAlpha1:input_type -> dapr.proto.runtime.v1.JobEventRequest
+	41, // 35: dapr.proto.runtime.v1.AppCallbackActors.GetRegisteredActors:input_type -> google.protobuf.Empty
+	5,  // 36: dapr.proto.runtime.v1.AppCallbackActors.OnActorActivate:input_type -> dapr.proto.runtime.v1.ActivateActorRequest
+	6,  // 37: dapr.proto.runtime.v1.AppCallbackActors.OnActorDeactivate:input_type -> dapr.proto.runtime.v1.DeactivateActorRequest
+	7,  // 38: dapr.proto.runtime.v1.AppCallbackActors.OnActorInvoke:input_type -> dapr.proto.runtime.v1.OnActorInvokeRequest
+	9,  // 39: dapr.proto.runtime.v1.AppCallbackActors.OnActorReminder:input_type -> dapr.proto.runtime.v1.OnActorReminderRequest
+	10, // 40: dapr.proto.runtime.v1.AppCallbackActors.OnActorTimer:input_type -> dapr.proto.runtime.v1.OnActorTimerRequest
+	42, // 41: dapr.proto.runtime.v1.AppCallback.OnInvoke:output_type -> dapr.proto.common.v1.InvokeResponse
+	23, // 42: dapr.proto.runtime.v1.AppCallback.ListTopicSubscriptions:output_type -> dapr.proto.runtime.v1.ListTopicSubscriptionsResponse
+	15, // 43: dapr.proto.runtime.v1.AppCallback.OnTopicEvent:output_type -> dapr.proto.runtime.v1.TopicEventResponse
+	28, // 44: dapr.proto.runtime.v1.AppCallback.ListInputBindings:output_type -> dapr.proto.runtime.v1.ListInputBindingsResponse
+	22, // 45: dapr.proto.runtime.v1.AppCallback.OnBindingEvent:output_type -> dapr.proto.runtime.v1.BindingEventResponse
+	20, // 46: dapr.proto.runtime.v1.AppCallback.OnBulkTopicEvent:output_type -> dapr.proto.runtime.v1.TopicEventBulkResponse
+	29, // 47: dapr.proto.runtime.v1.AppCallbackHealthCheck.HealthCheck:output_type -> dapr.proto.runtime.v1.HealthCheckResponse
+	20, // 48: dapr.proto.runtime.v1.AppCallbackAlpha.OnBulkTopicEventAlpha1:output_type -> dapr.proto.runtime.v1.TopicEventBulkResponse
+	13, // 49: dapr.proto.runtime.v1.AppCallbackAlpha.OnJobEventAlpha1:output_type -> dapr.proto.runtime.v1.JobEventResponse
+	2,  // 50: dapr.proto.runtime.v1.AppCallbackActors.GetRegisteredActors:output_type -> dapr.proto.runtime.v1.RegisteredActorsResponse
+	41, // 51: dapr.proto.runtime.v1.AppCallbackActors.OnActorActivate:output_type -> google.protobuf.Empty
+	41, // 52: dapr.proto.runtime.v1.AppCallbackActors.OnActorDeactivate:output_type -> google.protobuf.Empty
+	8,  // 53: dapr.proto.runtime.v1.AppCallbackActors.OnActorInvoke:output_type -> dapr.proto.runtime.v1.OnActorInvokeResponse
+	11, // 54: dapr.proto.runtime.v1.AppCallbackActors.OnActorReminder:output_type -> dapr.proto.runtime.v1.OnActorReminderResponse
+	11, // 55: dapr.proto.runtime.v1.AppCallbackActors.OnActorTimer:output_type -> dapr.proto.runtime.v1.OnActorReminderResponse
+	41, // [41:56] is the sub-list for method output_type
+	26, // [26:41] is the sub-list for method input_type
+	26, // [26:26] is the sub-list for extension type_name
+	26, // [26:26] is the sub-list for extension extendee
+	0,  // [0:26] is the sub-list for field type_name
 }
 
 func init() { file_dapr_proto_runtime_v1_appcallback_proto_init() }
@@ -1849,7 +2779,7 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*JobEventRequest); i {
+			switch v := v.(*RegisteredActorsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1861,7 +2791,7 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			}
 		}
 		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*JobEventResponse); i {
+			switch v := v.(*ActorEntityConfig); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1873,7 +2803,7 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			}
 		}
 		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TopicEventRequest); i {
+			switch v := v.(*ActorReentrancyConfig); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1885,7 +2815,7 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			}
 		}
 		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TopicEventResponse); i {
+			switch v := v.(*ActivateActorRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1897,7 +2827,7 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			}
 		}
 		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TopicEventCERequest); i {
+			switch v := v.(*DeactivateActorRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1909,7 +2839,7 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			}
 		}
 		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TopicEventBulkRequestEntry); i {
+			switch v := v.(*OnActorInvokeRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1921,7 +2851,7 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			}
 		}
 		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TopicEventBulkRequest); i {
+			switch v := v.(*OnActorInvokeResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1933,7 +2863,7 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			}
 		}
 		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TopicEventBulkResponseEntry); i {
+			switch v := v.(*OnActorReminderRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1945,7 +2875,7 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			}
 		}
 		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TopicEventBulkResponse); i {
+			switch v := v.(*OnActorTimerRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1957,7 +2887,7 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			}
 		}
 		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*BindingEventRequest); i {
+			switch v := v.(*OnActorReminderResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1969,7 +2899,7 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			}
 		}
 		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*BindingEventResponse); i {
+			switch v := v.(*JobEventRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1981,7 +2911,7 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			}
 		}
 		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListTopicSubscriptionsResponse); i {
+			switch v := v.(*JobEventResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1993,7 +2923,7 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			}
 		}
 		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TopicSubscription); i {
+			switch v := v.(*TopicEventRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2005,7 +2935,7 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			}
 		}
 		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TopicRoutes); i {
+			switch v := v.(*TopicEventResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2017,7 +2947,7 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			}
 		}
 		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TopicRule); i {
+			switch v := v.(*TopicEventCERequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2029,7 +2959,7 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			}
 		}
 		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*BulkSubscribeConfig); i {
+			switch v := v.(*TopicEventBulkRequestEntry); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2041,7 +2971,7 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			}
 		}
 		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListInputBindingsResponse); i {
+			switch v := v.(*TopicEventBulkRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2053,6 +2983,126 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			}
 		}
 		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TopicEventBulkResponseEntry); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TopicEventBulkResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*BindingEventRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*BindingEventResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListTopicSubscriptionsResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TopicSubscription); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TopicRoutes); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TopicRule); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*BulkSubscribeConfig); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListInputBindingsResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*HealthCheckResponse); i {
 			case 0:
 				return &v.state
@@ -2065,7 +3115,10 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			}
 		}
 	}
-	file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[5].OneofWrappers = []interface{}{
+	file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[0].OneofWrappers = []interface{}{}
+	file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[1].OneofWrappers = []interface{}{}
+	file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[2].OneofWrappers = []interface{}{}
+	file_dapr_proto_runtime_v1_appcallback_proto_msgTypes[15].OneofWrappers = []interface{}{
 		(*TopicEventBulkRequestEntry_Bytes)(nil),
 		(*TopicEventBulkRequestEntry_CloudEvent)(nil),
 	}
@@ -2075,9 +3128,9 @@ func file_dapr_proto_runtime_v1_appcallback_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_dapr_proto_runtime_v1_appcallback_proto_rawDesc,
 			NumEnums:      2,
-			NumMessages:   22,
+			NumMessages:   34,
 			NumExtensions: 0,
-			NumServices:   3,
+			NumServices:   4,
 		},
 		GoTypes:           file_dapr_proto_runtime_v1_appcallback_proto_goTypes,
 		DependencyIndexes: file_dapr_proto_runtime_v1_appcallback_proto_depIdxs,

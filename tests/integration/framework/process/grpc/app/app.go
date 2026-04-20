@@ -47,19 +47,21 @@ func New(t *testing.T, fopts ...Option) *App {
 	return &App{
 		grpc: procgrpc.New(t, append(opts.grpcopts, procgrpc.WithRegister(func(s *grpc.Server) {
 			srv := &server{
-				onInvokeFn:         opts.onInvokeFn,
-				onJobEventFn:       opts.onJobEventFn,
-				onTopicEventFn:     opts.onTopicEventFn,
-				onBulkTopicEventFn: opts.onBulkTopicEventFn,
-				listTopicSubFn:     opts.listTopicSubFn,
-				listInputBindFn:    opts.listInputBindFn,
-				onBindingEventFn:   opts.onBindingEventFn,
-				healthCheckFn:      opts.healthCheckFn,
-				pingFn:             opts.pingFn,
+				onInvokeFn:            opts.onInvokeFn,
+				onJobEventFn:          opts.onJobEventFn,
+				onTopicEventFn:        opts.onTopicEventFn,
+				onBulkTopicEventFn:    opts.onBulkTopicEventFn,
+				listTopicSubFn:        opts.listTopicSubFn,
+				listInputBindFn:       opts.listInputBindFn,
+				onBindingEventFn:      opts.onBindingEventFn,
+				healthCheckFn:         opts.healthCheckFn,
+				pingFn:                opts.pingFn,
+				getRegisteredActorsFn: opts.getRegisteredActorsFn,
 			}
 			rtv1.RegisterAppCallbackServer(s, srv)
 			rtv1.RegisterAppCallbackAlphaServer(s, srv)
 			rtv1.RegisterAppCallbackHealthCheckServer(s, srv)
+			rtv1.RegisterAppCallbackActorsServer(s, srv)
 			testpb.RegisterTestServiceServer(s, srv)
 			if opts.withRegister != nil {
 				opts.withRegister(s)
