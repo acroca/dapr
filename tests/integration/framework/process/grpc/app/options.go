@@ -41,6 +41,10 @@ type options struct {
 	healthCheckFn         func(context.Context, *emptypb.Empty) (*rtv1.HealthCheckResponse, error)
 	pingFn                func(context.Context, *testpb.PingRequest) (*testpb.PingResponse, error)
 	getRegisteredActorsFn func(context.Context, *emptypb.Empty) (*rtv1.RegisteredActorsResponse, error)
+	onActorInvokeFn       func(context.Context, *rtv1.OnActorInvokeRequest) (*rtv1.OnActorInvokeResponse, error)
+	onActorReminderFn     func(context.Context, *rtv1.OnActorReminderRequest) (*rtv1.OnActorReminderResponse, error)
+	onActorTimerFn        func(context.Context, *rtv1.OnActorTimerRequest) (*rtv1.OnActorReminderResponse, error)
+	onActorDeactivateFn   func(context.Context, *rtv1.DeactivateActorRequest) (*emptypb.Empty, error)
 }
 
 func WithGRPCOptions(opts ...procgrpc.Option) func(*options) {
@@ -115,5 +119,33 @@ func WithRegister(fn func(s *grpc.Server)) func(*options) {
 func WithOnGetRegisteredActorsFn(fn func(context.Context, *emptypb.Empty) (*rtv1.RegisteredActorsResponse, error)) func(*options) {
 	return func(opts *options) {
 		opts.getRegisteredActorsFn = fn
+	}
+}
+
+// WithOnActorInvokeFn installs a handler for AppCallbackActors.OnActorInvoke.
+func WithOnActorInvokeFn(fn func(context.Context, *rtv1.OnActorInvokeRequest) (*rtv1.OnActorInvokeResponse, error)) func(*options) {
+	return func(opts *options) {
+		opts.onActorInvokeFn = fn
+	}
+}
+
+// WithOnActorReminderFn installs a handler for AppCallbackActors.OnActorReminder.
+func WithOnActorReminderFn(fn func(context.Context, *rtv1.OnActorReminderRequest) (*rtv1.OnActorReminderResponse, error)) func(*options) {
+	return func(opts *options) {
+		opts.onActorReminderFn = fn
+	}
+}
+
+// WithOnActorTimerFn installs a handler for AppCallbackActors.OnActorTimer.
+func WithOnActorTimerFn(fn func(context.Context, *rtv1.OnActorTimerRequest) (*rtv1.OnActorReminderResponse, error)) func(*options) {
+	return func(opts *options) {
+		opts.onActorTimerFn = fn
+	}
+}
+
+// WithOnActorDeactivateFn installs a handler for AppCallbackActors.OnActorDeactivate.
+func WithOnActorDeactivateFn(fn func(context.Context, *rtv1.DeactivateActorRequest) (*emptypb.Empty, error)) func(*options) {
+	return func(opts *options) {
+		opts.onActorDeactivateFn = fn
 	}
 }

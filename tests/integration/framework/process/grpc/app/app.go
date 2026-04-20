@@ -57,6 +57,10 @@ func New(t *testing.T, fopts ...Option) *App {
 				healthCheckFn:         opts.healthCheckFn,
 				pingFn:                opts.pingFn,
 				getRegisteredActorsFn: opts.getRegisteredActorsFn,
+				onActorInvokeFn:       opts.onActorInvokeFn,
+				onActorReminderFn:     opts.onActorReminderFn,
+				onActorTimerFn:        opts.onActorTimerFn,
+				onActorDeactivateFn:   opts.onActorDeactivateFn,
 			}
 			rtv1.RegisterAppCallbackServer(s, srv)
 			rtv1.RegisterAppCallbackAlphaServer(s, srv)

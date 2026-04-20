@@ -70,6 +70,13 @@ func CreateLocalChannel(port, maxConcurrency int, conn *grpc.ClientConn, spec co
 	return c
 }
 
+// AppCallbackActorsClient returns the gRPC client used for the
+// AppCallbackActors service. Actor transports acquire this once per channel
+// and hold it for the lifetime of the connection.
+func (g *Channel) AppCallbackActorsClient() runtimev1pb.AppCallbackActorsClient {
+	return g.appCallbackActorsClient
+}
+
 // GetAppConfig gets application config from user application.
 //
 // The app advertises its registered actor types and runtime config by

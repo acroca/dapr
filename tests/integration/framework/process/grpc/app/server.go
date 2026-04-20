@@ -37,6 +37,10 @@ type server struct {
 	healthCheckFn         func(context.Context, *emptypb.Empty) (*rtv1.HealthCheckResponse, error)
 	pingFn                func(context.Context, *testpb.PingRequest) (*testpb.PingResponse, error)
 	getRegisteredActorsFn func(context.Context, *emptypb.Empty) (*rtv1.RegisteredActorsResponse, error)
+	onActorInvokeFn       func(context.Context, *rtv1.OnActorInvokeRequest) (*rtv1.OnActorInvokeResponse, error)
+	onActorReminderFn     func(context.Context, *rtv1.OnActorReminderRequest) (*rtv1.OnActorReminderResponse, error)
+	onActorTimerFn        func(context.Context, *rtv1.OnActorTimerRequest) (*rtv1.OnActorReminderResponse, error)
+	onActorDeactivateFn   func(context.Context, *rtv1.DeactivateActorRequest) (*emptypb.Empty, error)
 }
 
 func (s *server) OnInvoke(ctx context.Context, in *commonv1.InvokeRequest) (*commonv1.InvokeResponse, error) {
@@ -117,4 +121,40 @@ func (s *server) GetRegisteredActors(ctx context.Context, in *emptypb.Empty) (*r
 		return s.UnimplementedAppCallbackActorsServer.GetRegisteredActors(ctx, in)
 	}
 	return s.getRegisteredActorsFn(ctx, in)
+}
+
+// OnActorInvoke delegates to the test-supplied handler. The default empty
+// response keeps tests that only care about invocation count concise.
+func (s *server) OnActorInvoke(ctx context.Context, in *rtv1.OnActorInvokeRequest) (*rtv1.OnActorInvokeResponse, error) {
+	if s.onActorInvokeFn == nil {
+		return new(rtv1.OnActorInvokeResponse), nil
+	}
+	return s.onActorInvokeFn(ctx, in)
+}
+
+// OnActorReminder delegates to the test-supplied handler. Default ack keeps
+// tests concise when they only assert delivery.
+func (s *server) OnActorReminder(ctx context.Context, in *rtv1.OnActorReminderRequest) (*rtv1.OnActorReminderResponse, error) {
+	if s.onActorReminderFn == nil {
+		return new(rtv1.OnActorReminderResponse), nil
+	}
+	return s.onActorReminderFn(ctx, in)
+}
+
+// OnActorTimer delegates to the test-supplied handler. Default ack keeps
+// tests concise when they only assert delivery.
+func (s *server) OnActorTimer(ctx context.Context, in *rtv1.OnActorTimerRequest) (*rtv1.OnActorReminderResponse, error) {
+	if s.onActorTimerFn == nil {
+		return new(rtv1.OnActorReminderResponse), nil
+	}
+	return s.onActorTimerFn(ctx, in)
+}
+
+// OnActorDeactivate delegates to the test-supplied handler. Default success
+// matches the HTTP DELETE /actors/{type}/{id} 200-OK behavior.
+func (s *server) OnActorDeactivate(ctx context.Context, in *rtv1.DeactivateActorRequest) (*emptypb.Empty, error) {
+	if s.onActorDeactivateFn == nil {
+		return new(emptypb.Empty), nil
+	}
+	return s.onActorDeactivateFn(ctx, in)
 }
